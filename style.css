@@ -1,0 +1,13 @@
+#messages,
+#panels {
+    border: 1px solid #ccc;
+}
+
+#messages {
+    margin-top: 10px;
+}
+
+
+#admin {
+	text-align: right;
+}
