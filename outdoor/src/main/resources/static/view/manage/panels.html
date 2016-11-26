@@ -1,5 +1,13 @@
 <button type="button" onclick="loadPage('/view/outdoor.html')">Voltar</button>
 
+<p>Dinamicos
+<ul>
+    <li>pt:lajeado</li>
+    <li>pt:gramado</li>
+    <li>pt:poa</li>
+    <li>pt:guapore</li>
+    <li>pt:torres</li>
+</ul></p>
 
 <section id="manage-panels">
 
@@ -65,15 +73,19 @@
         </button>
     </form>
 
-    <input type="file" onchange="previewFile()" accept="image/*" name="imageUpload"><br>
+    <input type="file" onchange="previewFile()" accept="image/*" class="imageUpload"><br>
     <img class="image-preview" src="" height="200" alt="Image preview...">
+    <button type="button" onclick="removeImage()">
+        Remover Imagem
+    </button>
 
 </section>
 
 <script type="text/javascript">
     function previewFile() {
-        var preview = $('.image-preview');
-        var file = $("input[name='imageUpload']")[0].files[0];
+        var $preview = $('.image-preview');
+        var file = $(".imageUpload")[0].files[0];
+
         if (file.type.indexOf("image") == -1) {
             alert("Somente imagens são suportadas!");
             return;
@@ -81,7 +93,7 @@
         var reader = new FileReader();
 
         reader.addEventListener("load", function () {
-            preview.src = reader.result;
+            $preview.attr('src', reader.result);
             $("input[name='image.content']").val(reader.result);
             $("input[name='image.type']").val(file.type);
         }, false);
@@ -120,10 +132,11 @@
     }
 
     function edit(id) {
+        console.log(panels);
         var panel = panels.find(function (m) {
             return m.id === id;
         });
-        $form.fillForm(panel)
+        $form.fillForm(panel);
         $('.image-preview').attr('src', panel.image.content);
 
     }
@@ -145,7 +158,16 @@
 
     }
 
+    function removeImage() {
+        $(".imageUpload").val('');
+        $("input[name='image.content']").val('');
+        $("input[name='image.type']").val('');
+        $('.image-preview').attr('src', '');
+    }
+
     refreshTable();
+
+
 
     $form.fillForm({
         title: 'Titulo de Teste',
@@ -157,6 +179,6 @@
         messageStyle: {
             size: 14,
             color: '#333'
-        },
+        }
     });
 </script>

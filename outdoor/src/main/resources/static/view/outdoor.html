@@ -1,48 +1,94 @@
-<section id="panels">
-    <h1>Hello World!</h1>
+<section id="panels" class="fundo" onclick="clearInterval(intervalId);loadPage('/view/manage/panels.html')">
+    <section id="title"></section>
+
+    <section id="image-container">
+        <img id="image" src="">
+    </section>
+
+    <section id="footer"></section>
 </section>
 
-<section id="messages">
+<section id="messages" class="relogio" onclick="clearInterval(intervalId);loadPage('/view/manage/messages.html')">
+
 </section>
-
-<section id="admin">
-    <button type="button" onclick="clearInterval(intervalId);loadPage('/view/manage.html')">Gerenciar</button>
-</section>
-
-
 <script type="text/javascript">
+    var rotators = [];
+
     var $msgs = $('#messages');
-    var msgsRotator;
+
+    function readLM35() {
+        var def = $.Deferred();
+        def.resolve(25);
+        return def.promise();
+    }
     $.getJSON('/api/outdoor/messages').then(function (data) {
+
         var messages = data.map(function (msg) {
-            return Message(msg.timeOnScreen, false, function () {
-                $msgs.html(msg.content);
+            if(msg.content === 'date') {
+                return Message(msg.timeOnScreen, false, function () {
+                    $msgs.html(createDate());
+                })
+            }
+            if(msg.content === 'time') {
+                return Message(msg.timeOnScreen, true, function () {
+                    $msgs.html(createTime());
+                });
+            }
+            if(msg.content === 'lm35') {
+                return Message(msg.timeOnScreen, false, function () {
+                    readLM35().then(function (data) {
+                        $msgs.html(data+"ºC");
+                    });
+                });
+            }
+            return Message(msg.timeOnScreen, false, function (tick) {
+                var marq = $('<marquee scrollamount="20" loop="1">'+msg.content+'</marquee>')
+                    .on('finish', function () {
+                    console.log('asdasdas');
+                });
+                $msgs.html(marq);
+
+                /*if(msg.timeOnScreen == tick) {
+
+                } else if(tick <= 5) {
+                    $msgs.html(msg.content);
+                }*/
             })
         });
-        messages.unshift(Message(5, true, function () {
-            $msgs.html(formattedDateTime());
-        }));
-        msgsRotator = new MessageRotator(messages);
+
+        rotators.push(new MessageRotator(messages));
     });
 
 
     //------------------------------------------------
     var $panels = $('#panels');
-    var panels = [Message(10, false, function (tick) {
-        $panels.html('<h1>Hello World</h1>');
-    }),
-        Message(10, false, function (tick) {
-            $panels.html('<h1>Hello World 2</h1>');
-        })];
-    var panelsRotator = new MessageRotator(panels);
+    $.getJSON('/api/manage/panels').then(function (data) {
+        var panels = data.map(function (msg) {
+            return Message(msg.timeOnScreen, false, function () {
+                $panels.find('#title').html('<p style="font-size: '+msg.titleStyle.size+'px; color: '+msg.titleStyle.color+';">'+msg.title+'</p>');
+                $panels.find('#image').attr('src',msg.image.content);
+                $panels.find('#footer').html('<p style="font-size: '+msg.messageStyle.size+'px; color: '+msg.messageStyle.color+';">'+msg.message+'</p>');
+            })
+        });
+        rotators.push(new MessageRotator(panels));
+    });
 
     var intervalId = setInterval(function () {
-        msgsRotator.tick();
-        panelsRotator.tick();
+        rotators.forEach(function (r) {
+            r.tick();
+        });
         console.log('tick');
     }, 1000);
 
     $(window).on('resize', function () {
         ajustHeight($panels, $msgs);
-    }).trigger('resize');
+    }).trigger('resize').on('keydown', function (e) {
+        if(e.which === 32) {
+            rotators.forEach(function (r) {
+                r.togglePause();
+            })
+        }
+    });
+
+
 </script>
