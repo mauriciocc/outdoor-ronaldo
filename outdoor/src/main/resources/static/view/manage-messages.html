@@ -1,0 +1,75 @@
+<button type="button" onclick="loadPage('/view/outdoor.html')">Voltar</button>
+
+<section id="manage-messages">
+
+    <table id="messages-table">
+        <thead>
+        <th>Id</th>
+        <th>Tempo</th>
+        <th>Conteúdo</th>
+        <th>Ações</th>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+    <form id="msg-form">
+        <label>Id</label>
+        <input type="number" name="id" readonly>
+        <label>Tempo na tela</label>
+        <input type="number" name="timeOnScreen" value="10">
+        <label>Conteúdo</label>
+        <input type="text" name="content">
+        <button type="reset">Cancelar</button>
+        <button type="button" onclick="saveMessage(this.form)">Salvar</button>
+    </form>
+
+</section>
+
+<script type="text/javascript">
+    var messages = [];
+
+    function saveMessage(form) {
+        $.post('/api/manage/messages', $(form).serializeObject())
+            .then(function (data) {
+                refreshTable();
+                $(form).find("button[type='reset']").click();
+            });
+    }
+
+    function listMessages(messages) {
+        return messages.map(function (m) {
+            return '<tr><td>' + m.id + '</td><td>' + m.timeOnScreen + '</td><td>' + m.content + '</td>' +
+                '<td>' +
+                '<button type="button" onclick="edit(' + m.id + ')">Editar</button> ' +
+                '<button type="button" onclick="removeMessage(' + m.id + ')">Remover</button> ' +
+                '</td>' +
+                '</tr>'
+        });
+    }
+
+    function edit(id) {
+        $('#msg-form').fillForm(messages.find(function (m) {
+            return m.id === id;
+        }));
+    }
+
+    function removeMessage(id) {
+        $.delete('/api/manage/messages/' + id).then(function () {
+            refreshTable();
+            console.log('asd2');
+        });
+    }
+
+    function refreshTable() {
+        $.getJSON('/api/manage/messages').then(function (data) {
+            messages = data;
+            $('#messages-table tbody').html(
+                listMessages(messages)
+            )
+        });
+
+    }
+
+    refreshTable();
+</script>

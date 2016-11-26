@@ -1,0 +1,48 @@
+<section id="panels">
+    <h1>Hello World!</h1>
+</section>
+
+<section id="messages">
+</section>
+
+<section id="admin">
+    <button type="button" onclick="clearInterval(intervalId);loadPage('/view/manage.html')">Gerenciar</button>
+</section>
+
+
+<script type="text/javascript">
+    var $msgs = $('#messages');
+    var msgsRotator;
+    $.getJSON('/api/outdoor/messages').then(function (data) {
+        var messages = data.map(function (msg) {
+            return Message(msg.timeOnScreen, false, function () {
+                $msgs.html(msg.content);
+            })
+        });
+        messages.unshift(Message(5, true, function () {
+            $msgs.html(formattedDateTime());
+        }));
+        msgsRotator = new MessageRotator(messages);
+    });
+
+
+    //------------------------------------------------
+    var $panels = $('#panels');
+    var panels = [Message(10, false, function (tick) {
+        $panels.html('<h1>Hello World</h1>');
+    }),
+        Message(10, false, function (tick) {
+            $panels.html('<h1>Hello World 2</h1>');
+        })];
+    var panelsRotator = new MessageRotator(panels);
+
+    var intervalId = setInterval(function () {
+        msgsRotator.tick();
+        panelsRotator.tick();
+        console.log('tick');
+    }, 1000);
+
+    $(window).on('resize', function () {
+        ajustHeight($panels, $msgs);
+    }).trigger('resize');
+</script>
