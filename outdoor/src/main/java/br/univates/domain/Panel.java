@@ -1,9 +1,8 @@
 package br.univates.domain;
 
 
-public class Panel extends Model {
+public class Panel extends RoutedElement {
 
-    private int timeOnScreen = 10;
     private String title = "SEM TITULO";
     private FontStyle titleStyle = new FontStyle(18, "#333");
     private Image image = new Image();
@@ -11,14 +10,6 @@ public class Panel extends Model {
     private FontStyle messageStyle = new FontStyle(18, "#333");
 
     public Panel() {
-    }
-
-    public int getTimeOnScreen() {
-        return timeOnScreen;
-    }
-
-    public void setTimeOnScreen(int timeOnScreen) {
-        this.timeOnScreen = timeOnScreen;
     }
 
     public String getTitle() {
@@ -38,6 +29,9 @@ public class Panel extends Model {
     }
 
     public Image getImage() {
+        if (image == null) {
+            image = new Image();
+        }
         return image;
     }
 
@@ -59,5 +53,9 @@ public class Panel extends Model {
 
     public void setMessageStyle(FontStyle messageStyle) {
         this.messageStyle = messageStyle;
+    }
+
+    public boolean isContainImage() {
+        return !getImage().getContent().isEmpty();
     }
 }

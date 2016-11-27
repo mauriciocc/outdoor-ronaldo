@@ -4,22 +4,22 @@ import java.io.Serializable;
 
 public class FontStyle implements Serializable {
 
-    private int size;
+    private Integer size;
     private String color;
 
     public FontStyle() {
     }
 
-    public FontStyle(int size, String color) {
+    public FontStyle(Integer size, String color) {
         this.size = size;
         this.color = color;
     }
 
-    public int getSize() {
+    public Integer getSize() {
         return size;
     }
 
-    public void setSize(int size) {
+    public void setSize(Integer size) {
         this.size = size;
     }
 

@@ -2,12 +2,19 @@ package br.univates.view;
 
 import br.univates.domain.Message;
 import br.univates.domain.Panel;
+import br.univates.domain.RoutedElement;
 import br.univates.service.MessageStore;
 import br.univates.service.PanelStore;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.MimeType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/manage")
@@ -24,7 +31,9 @@ public class ManageCtrl {
 
     @GetMapping("/messages")
     public List<Message> findMessages() {
-        return messageStore.getElements();
+        return messageStore.getElements()
+                .stream()
+                .sorted(RoutedElement.ByDate).collect(Collectors.toList());
     }
 
     @PostMapping("/messages")
@@ -39,7 +48,17 @@ public class ManageCtrl {
 
     @GetMapping("/panels")
     public List<Panel> findPanels() {
-        return panelStore.getElements();
+        return panelStore.getElements()
+                .stream()
+                .sorted(RoutedElement.ByDate)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping(value = "/panels/{id}/image", produces = "image/*")
+    public ResponseEntity<FileSystemResource> findPanels(@PathVariable Integer id) {
+        return panelStore.imageRef(id)
+                .map(p -> ResponseEntity.ok(new FileSystemResource(p.toFile())))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping("/panels")

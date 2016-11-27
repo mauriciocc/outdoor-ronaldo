@@ -33,7 +33,7 @@ var checkTime = function (i) {
 var MessageRotator = function (items) {
     this.items = items;
     this.idx = 0;
-    this.time = items[0].time + 1;
+    this.time = items[0].time + 2;
     this.rendered = false;
     this.tick();
     this.paused = false;
@@ -50,7 +50,7 @@ MessageRotator.prototype = {
             if (this.idx >= this.items.length) {
                 this.idx = 0;
             }
-            this.time = this.items[this.idx].time;
+            this.time = this.items[this.idx].time+2;
             this.rendered = false;
         }
         if (!this.rendered || this.items[this.idx].dynamic) {
@@ -67,5 +67,9 @@ var ajustHeight = function($p, $m) {
 	var h = $(window).height();
 	$p.height(h-150);
 	$m.height(100);
+};
+
+var panelImageLink = function(id) {
+    return '/api/manage/panels/'+id+'/image?t='+new Date().getTime();
 };
 

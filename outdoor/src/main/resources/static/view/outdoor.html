@@ -21,38 +21,34 @@
         def.resolve(25);
         return def.promise();
     }
+
     $.getJSON('/api/outdoor/messages').then(function (data) {
 
         var messages = data.map(function (msg) {
-            if(msg.content === 'date') {
+            if (msg.content === 'date') {
                 return Message(msg.timeOnScreen, false, function () {
                     $msgs.html(createDate());
                 })
             }
-            if(msg.content === 'time') {
+            if (msg.content === 'time') {
                 return Message(msg.timeOnScreen, true, function () {
                     $msgs.html(createTime());
                 });
             }
-            if(msg.content === 'lm35') {
+            if (msg.content === 'lm35') {
                 return Message(msg.timeOnScreen, false, function () {
                     readLM35().then(function (data) {
-                        $msgs.html(data+"ºC");
+                        $msgs.html(data + "ºC");
                     });
                 });
             }
             return Message(msg.timeOnScreen, false, function (tick) {
-                var marq = $('<marquee scrollamount="20" loop="1">'+msg.content+'</marquee>')
-                    .on('finish', function () {
-                    console.log('asdasdas');
-                });
-                $msgs.html(marq);
-
-                /*if(msg.timeOnScreen == tick) {
-
-                } else if(tick <= 5) {
-                    $msgs.html(msg.content);
-                }*/
+                $msgs.html('<div class="marquee">' + msg.content + '</div>');
+                $('.marquee')
+                    .bind('finished', function () {
+                        $(this).marquee('destroy');
+                        $msgs.html(msg.content)
+                    }).marquee();
             })
         });
 
@@ -65,9 +61,9 @@
     $.getJSON('/api/manage/panels').then(function (data) {
         var panels = data.map(function (msg) {
             return Message(msg.timeOnScreen, false, function () {
-                $panels.find('#title').html('<p style="font-size: '+msg.titleStyle.size+'px; color: '+msg.titleStyle.color+';">'+msg.title+'</p>');
-                $panels.find('#image').attr('src',msg.image.content);
-                $panels.find('#footer').html('<p style="font-size: '+msg.messageStyle.size+'px; color: '+msg.messageStyle.color+';">'+msg.message+'</p>');
+                $panels.find('#title').html('<p style="font-size: ' + msg.titleStyle.size + 'px; color: ' + msg.titleStyle.color + ';">' + msg.title + '</p>');
+                $panels.find('#image').attr('src', panelImageLink(msg.id));
+                $panels.find('#footer').html('<p style="font-size: ' + msg.messageStyle.size + 'px; color: ' + msg.messageStyle.color + ';">' + msg.message + '</p>');
             })
         });
         rotators.push(new MessageRotator(panels));
@@ -83,7 +79,7 @@
     $(window).on('resize', function () {
         ajustHeight($panels, $msgs);
     }).trigger('resize').on('keydown', function (e) {
-        if(e.which === 32) {
+        if (e.which === 32) {
             rotators.forEach(function (r) {
                 r.togglePause();
             })

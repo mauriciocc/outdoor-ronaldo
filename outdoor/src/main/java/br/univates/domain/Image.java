@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 public class Image implements Serializable {
 
-    private String content;
-    private String type;
+    private String content = "";
+    private String type = "";
 
     public String getContent() {
         return content;

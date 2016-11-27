@@ -1,85 +1,161 @@
-<button type="button" onclick="loadPage('/view/outdoor.html')">Voltar</button>
+<section class="manage-element">
+    <div class="row top-options">
+        <div class="col-md-6">
+            <button type="button" class="btn btn-link" onclick="loadPage('/view/outdoor.html')">
+                <span class="glyphicon glyphicon-chevron-left"/>
+                Voltar
+            </button>
+        </div>
 
-<p>Dinamicos
+
+        <div class="col-md-6 text-right">
+            <button type="button" class="btn btn-success" onclick="newElement()">
+                <span class="glyphicon glyphicon-plus-sign"/>
+                Novo Painel
+            </button>
+        </div>
+
+    </div>
+
+    <section id="manage-panels">
+
+        <fieldset>
+            <legend>Painéis</legend>
+            <table id="panels-table" class="table table-condensed table-hover table-striped">
+                <thead>
+                <th>Ordem</th>
+                <th>Id</th>
+                <th>Tempo na tela</th>
+                <th>Titulo</th>
+                <th>Mensagem</th>
+                <th>Imagem</th>
+                <th>Ações</th>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </fieldset>
+
+
+    </section>
+
+</section>
+<!-- Modal -->
+<div class="modal fade" id="form-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                <h4 class="modal-title">
+                    <span class="glyphicon glyphicon-info-sign" title="<p>Dinamicos
 <ul>
     <li>pt:lajeado</li>
     <li>pt:gramado</li>
     <li>pt:poa</li>
     <li>pt:guapore</li>
     <li>pt:torres</li>
-</ul></p>
+</ul></p>"></span>
+                    Gerenciamento de Painel
+                </h4>
+            </div>
+            <div class="modal-body">
 
-<section id="manage-panels">
+                <form id="panel-form">
+                    <input type="hidden" name="id"/>
 
-    <table id="panels-table">
-        <thead>
-        <th>Id</th>
-        <th>Tempo na tela</th>
-        <th>Titulo</th>
-        <th>Mensagem</th>
-        <th>Imagem</th>
-        <th>Ações</th>
-        </thead>
-        <tbody>
+                    <input type="hidden" name="image.content"/>
+                    <input type="hidden" name="image.type"/>
 
-        </tbody>
-    </table>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Ordem</label>
+                                <input type="number" name="order" required class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Tempo na tela</label>
+                                <input type="number" name="timeOnScreen" value="10" required class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Titulo</label>
+                                <input type="text" name="title" required class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Tamanho Fonte</label>
+                                <input type="number" name="titleStyle.size" required class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Cor Fonte</label>
+                                <input type="text" name="titleStyle.color" required class="form-control colorpicker"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Mensagem</label>
+                                <input type="text" name="message" required class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Tamanho Fonte</label>
+                                <input type="number" name="messageStyle.size" required class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Cor Fonte</label>
+                                <input type="text" name="messageStyle.color" required class="form-control colorpicker"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <input type="file" onchange="previewFile()" accept="image/*" class="imageUpload">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" onclick="removeImage()" class="btn btn-warning btn-sm">
+                                <span class="glyphicon glyphicon-remove"/>
+                                Remover Imagem
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <img class="image-preview" src="" style="max-width: 100px"/>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="reset" class="btn btn-danger btn-sm" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"/>
+                    Cancelar
+                </button>
+                <button type="button" onclick="save()" class="btn btn-success btn-sm">
+                    <span class="glyphicon glyphicon-save"/>
+                    Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
-    <form id="panel-form">
-        <input type="hidden" name="id"/>
 
-        <input type="hidden" name="image.content"/>
-        <input type="hidden" name="image.type"/>
-
-
-        <label>Tempo na tela</label>
-        <input type="number" name="timeOnScreen" value="10">
-
-        <label>
-            Titulo
-            <input type="text" name="title">
-        </label>
-        <label>
-            Tamanho Fonte
-            <input type="number" name="titleStyle.size">
-        </label>
-        <label>
-            Cor Fonte
-            <input type="text" name="titleStyle.color">
-        </label>
-
-
-        <label>
-            Mensagem
-            <input type="text" name="message">
-        </label>
-
-        <label>
-            Tamanho Fonte
-            <input type="number" name="messageStyle.size">
-        </label>
-
-        <label>
-            Cor Fonte
-            <input type="text" name="messageStyle.color">
-        </label>
-
-        <button type="reset">
-            Cancelar
-        </button>
-        <button type="button" onclick="save(this.form)">
-            Salvar
-        </button>
-    </form>
-
-    <input type="file" onchange="previewFile()" accept="image/*" class="imageUpload"><br>
-    <img class="image-preview" src="" height="200" alt="Image preview...">
-    <button type="button" onclick="removeImage()">
-        Remover Imagem
-    </button>
-
-</section>
 
 <script type="text/javascript">
     function previewFile() {
@@ -108,43 +184,78 @@
     var panels = [];
 
     var $form = $('#panel-form');
+    var $formModal = $("#form-modal");
+    var $imagePreview = $('.image-preview');
 
-    function save(form) {
-        $.post('/api/manage/panels', $(form).serializeObject())
+    function resetForm() {
+        $form.find("input").val('');
+        var order = 0;
+        panels.forEach(function (p) {
+           order = Math.max(order, p.order);
+        });
+        $imagePreview.attr('src', '');
+        order++;
+        $form.fillForm({
+            order: order,
+            timeOnScreen: 30,
+            titleStyle: {
+                size: 18,
+                color: '#333'
+            },
+            messageStyle: {
+                size: 14,
+                color: '#333'
+            }
+        });
+    }
+
+    function newElement() {
+        resetForm();
+        $formModal.modal();
+    }
+
+    function save() {
+        $.post('/api/manage/panels', $form.serializeObject())
             .then(function (data) {
                 refreshTable();
-                $(form).find("button[type='reset']").click();
+                $formModal.modal('hide');
             });
     }
 
     function list(panels) {
-        var st = function(fs) {
-            return 'font-size: '+fs.size+'px; color: '+fs.color+';';
+        var st = function (fs) {
+            return 'font-size: ' + fs.size + 'px; color: ' + fs.color + ';';
         };
         return panels.map(function (p) {
-            return '<tr><td>' + p.id + '</td><td>' + p.timeOnScreen + '</td><td style="'+st(p.titleStyle)+'">' + p.title + '</td><td style="'+st(p.messageStyle)+'">' + p.message + '</td><td><img src="'+p.image.content+'" width="50"/> </td>' +
+            return '<tr>' +
+                '<td>' + p.order + '</td>' +
+                '<td>' + p.id + '</td>' +
+                '<td>' + p.timeOnScreen + '</td>' +
+                '<td style="' + st(p.titleStyle) + '">' + p.title + '</td>' +
+                '<td style="' + st(p.messageStyle) + '">' + p.message + '</td>' +
                 '<td>' +
-                '<button type="button" onclick="edit(' + p.id + ')">Editar</button> ' +
-                '<button type="button" onclick="remove(' + p.id + ')">Remover</button> ' +
+                (p.containImage ? '<img src="'+panelImageLink(p.id)+'" width="50"/>' : '-') +'</td>' +
+                '<td>' +
+                '<button type="button" class="btn btn-warning btn-xs" onclick="edit(' + p.id + ')" title="Editar"><span class="glyphicon glyphicon-edit"/></button> ' +
+                '<button type="button" class="btn btn-danger btn-xs" onclick="remove(' + p.id + ')" title="Remover"><span class="glyphicon glyphicon-remove"/></button> ' +
                 '</td>' +
                 '</tr>'
         });
     }
 
     function edit(id) {
-        console.log(panels);
+        resetForm();
         var panel = panels.find(function (m) {
             return m.id === id;
         });
         $form.fillForm(panel);
-        $('.image-preview').attr('src', panel.image.content);
-
+        $imagePreview.attr('src', panelImageLink(panel.id));
+        $formModal.modal();
     }
 
     function remove(id) {
         $.delete('/api/manage/panels/' + id).then(function () {
             refreshTable();
-            console.log('asd2');
         });
     }
 
@@ -162,23 +273,10 @@
         $(".imageUpload").val('');
         $("input[name='image.content']").val('');
         $("input[name='image.type']").val('');
-        $('.image-preview').attr('src', '');
+        $imagePreview.attr('src', '');
     }
 
     refreshTable();
 
-
-
-    $form.fillForm({
-        title: 'Titulo de Teste',
-        titleStyle: {
-            size: 18,
-            color: '#333'
-        },
-        message: 'Mensagem de Teste',
-        messageStyle: {
-            size: 14,
-            color: '#333'
-        }
-    });
+    $('.colorpicker').colorpicker();
 </script>

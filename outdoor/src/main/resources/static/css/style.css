@@ -1,3 +1,6 @@
+.container-fluid {
+    padding: 0;
+}
 #messages,
 #panels {
     border: 1px solid #ccc;
@@ -26,12 +29,25 @@
     width: 100%;
 }
 
+hr {
+    margin: 10px 0;
+}
+
+.manage-element {
+    padding: 15px;
+}
+
+.top-options {
+    margin-bottom: 10px;
+}
+
+
 /* Tonhooo */
-body, html {
+/*body, html {
     margin: 0px;
     background-color: #eeeeee;
     overflow: hidden;
-}
+}*/
 
 .fundo {
     background: #414b66;
