@@ -20,7 +20,7 @@
         return $.get('/api/manage/temperature');
     }
 
-    $.getJSON('/api/outdoor/messages').then(function (data) {
+    $.getJSON('/api/manage/messages').then(function (data) {
 
         var messages = data.map(function (msg) {
             if (msg.content === 'date') {

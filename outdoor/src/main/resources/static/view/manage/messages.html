@@ -1,82 +1,175 @@
-<button type="button" onclick="loadPage('/view/outdoor.html')">Voltar</button>
+<section class="manage-element">
+    <div class="row top-options">
+        <div class="col-md-6">
+            <button type="button" class="btn btn-link" onclick="loadPage('/view/outdoor.html')">
+                <span class="glyphicon glyphicon-chevron-left"/>
+                Voltar
+            </button>
+        </div>
 
-<p>Dinamicos
-<ul>
-    <li>date</li>
-    <li>time</li>
-    <li>lm35</li>
-</ul></p>
 
-<section id="manage-messages">
+        <div class="col-md-6 text-right">
+            <button type="button" class="btn btn-success" onclick="newElement()">
+                <span class="glyphicon glyphicon-plus-sign"/>
+                Nova Mensagem
+            </button>
+        </div>
 
-    <table id="messages-table">
-        <thead>
-        <th>Id</th>
-        <th>Tempo</th>
-        <th>Conteúdo</th>
-        <th>Ações</th>
-        </thead>
-        <tbody>
+    </div>
 
-        </tbody>
-    </table>
-    <form id="msg-form">
-        <label>Id</label>
-        <input type="number" name="id" readonly>
-        <label>Tempo na tela</label>
-        <input type="number" name="timeOnScreen" value="10">
-        <label>Conteúdo</label>
-        <input type="text" name="content">
-        <button type="reset">Cancelar</button>
-        <button type="button" onclick="saveMessage(this.form)">Salvar</button>
-    </form>
+    <section id="manage-panels">
+
+        <fieldset>
+            <legend>Mensagens</legend>
+            <table id="panels-table" class="table table-condensed table-hover table-striped">
+                <thead>
+                <th>Ordem</th>
+                <th>Id</th>
+                <th>Tempo na tela</th>
+                <th>Mensagem</th>
+                <th>Ações</th>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </fieldset>
+
+
+    </section>
 
 </section>
+<!-- Modal -->
+<div class="modal fade" id="form-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                <h4 class="modal-title">
+                    <span class="glyphicon glyphicon-info-sign" title="Dinamicos:
+    - date
+    - time
+    - lm35"></span>
+                    Gerenciamento de Mensagens
+                </h4>
+            </div>
+            <div class="modal-body">
+
+                <form id="panel-form">
+                    <input type="hidden" name="id"/>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Ordem</label>
+                                <input type="number" name="order" required class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Tempo na tela</label>
+                                <input type="number" name="timeOnScreen" value="10" required class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Mensagem</label>
+                                <input type="text" name="content" required class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="reset" class="btn btn-danger btn-sm" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"/>
+                    Cancelar
+                </button>
+                <button type="button" onclick="save()" class="btn btn-success btn-sm">
+                    <span class="glyphicon glyphicon-save"/>
+                    Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script type="text/javascript">
-    var messages = [];
+    var panels = [];
 
-    function saveMessage(form) {
-        $.post('/api/manage/messages', $(form).serializeObject())
+    var $form = $('#panel-form');
+    var $formModal = $("#form-modal");
+    var $imagePreview = $('.image-preview');
+
+    function resetForm() {
+        $form.find("input").val('');
+        var order = 0;
+        panels.forEach(function (p) {
+            order = Math.max(order, p.order);
+        });
+        order++;
+        $form.fillForm({
+            id: '',
+            order: order,
+            timeOnScreen: 30
+        });
+    }
+
+    function newElement() {
+        resetForm();
+        $formModal.modal();
+    }
+
+    function save() {
+        $.post('/api/manage/messages', $form.serializeObject())
             .then(function (data) {
                 refreshTable();
-                $(form).find("button[type='reset']").click();
+                $formModal.modal('hide');
             });
     }
 
-    function listMessages(messages) {
-        return messages.map(function (m) {
-            return '<tr><td>' + m.id + '</td><td>' + m.timeOnScreen + '</td><td>' + m.content + '</td>' +
+    function list(panels) {
+        return panels.map(function (p) {
+            return '<tr>' +
+                '<td>' + p.order + '</td>' +
+                '<td>' + p.id + '</td>' +
+                '<td>' + p.timeOnScreen + '</td>' +
+                '<td>' + p.content + '</td>' +
                 '<td>' +
-                '<button type="button" onclick="edit(' + m.id + ')">Editar</button> ' +
-                '<button type="button" onclick="removeMessage(' + m.id + ')">Remover</button> ' +
+                '<button type="button" class="btn btn-warning btn-xs" onclick="edit(' + p.id + ')" title="Editar"><span class="glyphicon glyphicon-edit"/></button> ' +
+                '<button type="button" class="btn btn-danger btn-xs" onclick="remove(' + p.id + ')" title="Remover"><span class="glyphicon glyphicon-remove"/></button> ' +
                 '</td>' +
                 '</tr>'
         });
     }
 
     function edit(id) {
-        $('#msg-form').fillForm(messages.find(function (m) {
+        resetForm();
+        var panel = panels.find(function (m) {
             return m.id === id;
-        }));
+        });
+        $form.fillForm(panel);
+        $formModal.modal();
     }
 
-    function removeMessage(id) {
+    function remove(id) {
         $.delete('/api/manage/messages/' + id).then(function () {
             refreshTable();
-            console.log('asd2');
         });
     }
 
     function refreshTable() {
         $.getJSON('/api/manage/messages').then(function (data) {
-            messages = data;
-            $('#messages-table tbody').html(
-                listMessages(messages)
+            panels = data;
+            $('#panels-table tbody').html(
+                list(panels)
             )
         });
 
     }
-
     refreshTable();
 </script>

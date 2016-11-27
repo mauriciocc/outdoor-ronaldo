@@ -1,11 +1,10 @@
 package br.univates.domain;
 
-import java.nio.ByteOrder;
 import java.util.Comparator;
 
 public abstract class RoutedElement extends Model {
 
-    public static final Comparator<RoutedElement> ByDate = (RoutedElement o1, RoutedElement o2) -> Integer.valueOf(o1.getOrder()).compareTo(o2.getOrder());
+    public static final Comparator<RoutedElement> ByOrder = (RoutedElement o1, RoutedElement o2) -> Integer.valueOf(o1.getOrder()).compareTo(o2.getOrder());
 
     protected int timeOnScreen = 10;
     protected int order;

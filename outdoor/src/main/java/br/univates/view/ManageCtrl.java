@@ -34,7 +34,8 @@ public class ManageCtrl {
     public List<Message> findMessages() {
         return messageStore.getElements()
                 .stream()
-                .sorted(RoutedElement.ByDate).collect(Collectors.toList());
+                .sorted(RoutedElement.ByOrder)
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/messages")
@@ -51,7 +52,7 @@ public class ManageCtrl {
     public List<Panel> findPanels() {
         return panelStore.getElements()
                 .stream()
-                .sorted(RoutedElement.ByDate)
+                .sorted(RoutedElement.ByOrder)
                 .collect(Collectors.toList());
     }
 
