@@ -48,14 +48,12 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
                 <h4 class="modal-title">
-                    <span class="glyphicon glyphicon-info-sign" title="<p>Dinamicos
-<ul>
-    <li>pt:lajeado</li>
-    <li>pt:gramado</li>
-    <li>pt:poa</li>
-    <li>pt:guapore</li>
-    <li>pt:torres</li>
-</ul></p>"></span>
+                    <span class="glyphicon glyphicon-info-sign" title="Dinamicos:
+    - pt:lajeado
+    - pt:gramado
+    - pt:poa
+    - pt:guapore
+    - pt:torres"></span>
                     Gerenciamento de Painel
                 </h4>
             </div>
@@ -78,6 +76,12 @@
                             <div class="form-group">
                                 <label>Tempo na tela</label>
                                 <input type="number" name="timeOnScreen" value="10" required class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Cor de fundo</label>
+                                <input type="text" name="bgColor" required class="form-control colorpicker"/>
                             </div>
                         </div>
                     </div>
@@ -155,8 +159,6 @@
 </div>
 
 
-
-
 <script type="text/javascript">
     function previewFile() {
         var $preview = $('.image-preview');
@@ -191,12 +193,13 @@
         $form.find("input").val('');
         var order = 0;
         panels.forEach(function (p) {
-           order = Math.max(order, p.order);
+            order = Math.max(order, p.order);
         });
         $imagePreview.attr('src', '');
         order++;
         $form.fillForm({
             order: order,
+            bgColor: '#FFF',
             timeOnScreen: 30,
             titleStyle: {
                 size: 18,
@@ -223,18 +226,18 @@
     }
 
     function list(panels) {
-        var st = function (fs) {
-            return 'font-size: ' + fs.size + 'px; color: ' + fs.color + ';';
+        var st = function (bg, fs) {
+            return 'background-color: '+bg+';font-size: ' + fs.size + 'px; color: ' + fs.color + ';';
         };
         return panels.map(function (p) {
             return '<tr>' +
                 '<td>' + p.order + '</td>' +
                 '<td>' + p.id + '</td>' +
                 '<td>' + p.timeOnScreen + '</td>' +
-                '<td style="' + st(p.titleStyle) + '">' + p.title + '</td>' +
-                '<td style="' + st(p.messageStyle) + '">' + p.message + '</td>' +
+                '<td style="' + st(p.bgColor, p.titleStyle) + '">' + p.title + '</td>' +
+                '<td style="' + st(p.bgColor, p.messageStyle) + '">' + p.message + '</td>' +
                 '<td>' +
-                (p.containImage ? '<img src="'+panelImageLink(p.id)+'" width="50"/>' : '-') +'</td>' +
+                (p.containImage ? '<img src="' + panelImageLink(p.id) + '" width="50"/>' : '-') + '</td>' +
                 '<td>' +
                 '<button type="button" class="btn btn-warning btn-xs" onclick="edit(' + p.id + ')" title="Editar"><span class="glyphicon glyphicon-edit"/></button> ' +
                 '<button type="button" class="btn btn-danger btn-xs" onclick="remove(' + p.id + ')" title="Remover"><span class="glyphicon glyphicon-remove"/></button> ' +

@@ -47,7 +47,7 @@ public class PanelStore extends Store<Panel> {
 
     @Override
     public Panel save(Panel element) {
-        if (!element.isContainImage()) {
+        if (!element.isContainImage() || !element.getImage().getContent().contains("base64")) {
             return super.save(element);
         }
 

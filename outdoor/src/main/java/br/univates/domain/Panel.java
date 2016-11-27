@@ -8,6 +8,7 @@ public class Panel extends RoutedElement {
     private Image image = new Image();
     private String message = "SEM MENSAGEM";
     private FontStyle messageStyle = new FontStyle(18, "#333");
+    private String bgColor = "#FFF";
 
     public Panel() {
     }
@@ -53,6 +54,14 @@ public class Panel extends RoutedElement {
 
     public void setMessageStyle(FontStyle messageStyle) {
         this.messageStyle = messageStyle;
+    }
+
+    public String getBgColor() {
+        return bgColor;
+    }
+
+    public void setBgColor(String bgColor) {
+        this.bgColor = bgColor;
     }
 
     public boolean isContainImage() {

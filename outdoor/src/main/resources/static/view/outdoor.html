@@ -17,9 +17,7 @@
     var $msgs = $('#messages');
 
     function readLM35() {
-        var def = $.Deferred();
-        def.resolve(25);
-        return def.promise();
+        return $.get('/api/manage/temperature');
     }
 
     $.getJSON('/api/outdoor/messages').then(function (data) {
@@ -36,7 +34,7 @@
                 });
             }
             if (msg.content === 'lm35') {
-                return Message(msg.timeOnScreen, false, function () {
+                return Message(msg.timeOnScreen, true, function () {
                     readLM35().then(function (data) {
                         $msgs.html(data + "ºC");
                     });
@@ -61,6 +59,7 @@
     $.getJSON('/api/manage/panels').then(function (data) {
         var panels = data.map(function (msg) {
             return Message(msg.timeOnScreen, false, function () {
+                $panels.css("background-color", msg.bgColor);
                 $panels.find('#title').html('<p style="font-size: ' + msg.titleStyle.size + 'px; color: ' + msg.titleStyle.color + ';">' + msg.title + '</p>');
                 $panels.find('#image').attr('src', panelImageLink(msg.id));
                 $panels.find('#footer').html('<p style="font-size: ' + msg.messageStyle.size + 'px; color: ' + msg.messageStyle.color + ';">' + msg.message + '</p>');

@@ -5,15 +5,14 @@ import br.univates.domain.Panel;
 import br.univates.domain.RoutedElement;
 import br.univates.service.MessageStore;
 import br.univates.service.PanelStore;
+import br.univates.service.TemperatureMonitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MimeType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -22,11 +21,13 @@ public class ManageCtrl {
 
     private final MessageStore messageStore;
     private final PanelStore panelStore;
+    private final TemperatureMonitor temperatureMonitor;
 
     @Autowired
-    public ManageCtrl(MessageStore messageStore, PanelStore panelStore) {
+    public ManageCtrl(MessageStore messageStore, PanelStore panelStore, TemperatureMonitor temperatureMonitor) {
         this.messageStore = messageStore;
         this.panelStore = panelStore;
+        this.temperatureMonitor = temperatureMonitor;
     }
 
     @GetMapping("/messages")
@@ -71,4 +72,8 @@ public class ManageCtrl {
         panelStore.remove(id);
     }
 
+    @GetMapping("/temperature")
+    public int findTemperature() {
+        return temperatureMonitor.readPort(TemperatureMonitor.AIN1);
+    }
 }
