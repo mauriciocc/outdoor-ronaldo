@@ -235,8 +235,8 @@
                 '<td>' + p.order + '</td>' +
                 '<td>' + p.id + '</td>' +
                 '<td>' + p.timeOnScreen + '</td>' +
-                '<td style="' + st(p.bgColor, p.titleStyle) + '">' + p.title + '</td>' +
-                '<td style="' + st(p.bgColor, p.messageStyle) + '">' + p.message + '</td>' +
+                '<td style="' + st(p.bgColor, p.titleStyle) + '"><div class="hide-overflow">' + escapeHtml(p.title) + '</div></td>' +
+                '<td style="' + st(p.bgColor, p.messageStyle) + '"><div class="hide-overflow">' + escapeHtml(p.message) + '</div></td>' +
                 '<td>' +
                 (p.containImage ? '<img src="' + panelImageLink(p.id) + '" width="50"/>' : '-') + '</td>' +
                 '<td>' +

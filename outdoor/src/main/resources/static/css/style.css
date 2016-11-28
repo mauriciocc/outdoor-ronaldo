@@ -1,13 +1,20 @@
 .container-fluid {
     padding: 0;
 }
-#messages,
+
+#panels,
+#messages {
+    width: 100%;
+}
+
 #panels {
-    border: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
     overflow: hidden;
+    text-align: center;
 }
 
 #messages {
+    border: none;
     margin-top: 10px;
 }
 
@@ -29,6 +36,15 @@
     width: 100%;
 }
 
+.fill-panel {
+    width: 100%;
+    height: 100%;
+}
+
+.hide {
+    display: none;
+}
+
 hr {
     margin: 10px 0;
 }
@@ -41,6 +57,13 @@ hr {
     margin-bottom: 10px;
 }
 
+.hide-overflow {
+    max-height: 50px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 250px;
+}
 
 /* Tonhooo */
 /*body, html {
@@ -71,17 +94,15 @@ hr {
 }
 
 .relogio {
-    margin-top: 10px;
     font-size: 7em;
     color: #444;
     padding: 10px;
-    line-height: 1.4;
-    height: 20%;
     font-family: "DS-Digital";
     background: whitesmoke;
     text-align: center;
-    border: 1px solid #4b4b4b;
     box-shadow: inset 0px -1px 14px -2px rgba(126, 126, 126, 0.75);
     white-space: nowrap;
+    overflow: hidden;
+    line-height: 100px;
 }
 

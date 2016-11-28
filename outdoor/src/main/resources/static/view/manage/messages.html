@@ -138,7 +138,7 @@
                 '<td>' + p.order + '</td>' +
                 '<td>' + p.id + '</td>' +
                 '<td>' + p.timeOnScreen + '</td>' +
-                '<td>' + p.content + '</td>' +
+                '<td>' + escapeHtml(p.content) + '</td>' +
                 '<td>' +
                 '<button type="button" class="btn btn-warning btn-xs" onclick="edit(' + p.id + ')" title="Editar"><span class="glyphicon glyphicon-edit"/></button> ' +
                 '<button type="button" class="btn btn-danger btn-xs" onclick="remove(' + p.id + ')" title="Remover"><span class="glyphicon glyphicon-remove"/></button> ' +

@@ -32,31 +32,46 @@ var checkTime = function (i) {
 
 var MessageRotator = function (items) {
     this.items = items;
-    this.idx = 0;
-    this.time = items[0].time + 2;
+    this.idx = -1;
     this.rendered = false;
-    this.tick();
     this.paused = false;
+    this.nextMessage();
 };
 
 MessageRotator.prototype = {
     tick: function () {
-        if(this.paused) {
+        if(this.isEmpty() || this.paused || this.time < 0) {
             return;
         }
         this.time--;
         if (!this.time) {
-            this.idx++;
-            if (this.idx >= this.items.length) {
-                this.idx = 0;
-            }
-            this.time = this.items[this.idx].time+2;
-            this.rendered = false;
+           this.nextMessage();
         }
         if (!this.rendered || this.items[this.idx].dynamic) {
-            this.items[this.idx].fn(this.time);
-            this.rendered = true;
+            this.render();
         }
+    },
+    isEmpty: function () {
+        return this.idx >= this.items.length;
+    },
+    render: function () {
+        if(this.isEmpty()) {
+            return;
+        }
+        this.items[this.idx].fn(this.time);
+        this.rendered = true;
+    },
+    nextMessage: function () {
+        if(this.isEmpty()) {
+            return;
+        }
+        this.idx++;
+        if (this.idx >= this.items.length) {
+            this.idx = 0;
+        }
+        this.time = this.items[this.idx].time;
+        this.rendered = false;
+        this.render();
     },
     togglePause: function () {
         this.paused = !this.paused;

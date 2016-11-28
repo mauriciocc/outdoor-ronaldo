@@ -1,9 +1,7 @@
 <section id="panels" class="fundo" onclick="clearInterval(intervalId);loadPage('/view/manage/panels.html')">
     <section id="title"></section>
 
-    <section id="image-container">
-        <img id="image" src="">
-    </section>
+        <img id="image" src="" alt="">
 
     <section id="footer"></section>
 </section>
@@ -11,6 +9,7 @@
 <section id="messages" class="relogio" onclick="clearInterval(intervalId);loadPage('/view/manage/messages.html')">
 
 </section>
+
 <script type="text/javascript">
     var rotators = [];
 
@@ -21,6 +20,8 @@
     }
 
     $.getJSON('/api/manage/messages').then(function (data) {
+
+        var rotator;
 
         var messages = data.map(function (msg) {
             if (msg.content === 'date') {
@@ -40,17 +41,18 @@
                     });
                 });
             }
-            return Message(msg.timeOnScreen, false, function (tick) {
-                $msgs.html('<div class="marquee">' + msg.content + '</div>');
+            return Message(-1, false, function (tick) {
+                $msgs.html('<div class="marquee">' + escapeHtml(msg.content) + '</div>');
                 $('.marquee')
                     .bind('finished', function () {
                         $(this).marquee('destroy');
-                        $msgs.html(msg.content)
-                    }).marquee();
+                        rotator.nextMessage();
+                    }).marquee({startVisible: false});
             })
         });
 
-        rotators.push(new MessageRotator(messages));
+        rotator = new MessageRotator(messages);
+        rotators.push(rotator);
     });
 
 
@@ -60,9 +62,38 @@
         var panels = data.map(function (msg) {
             return Message(msg.timeOnScreen, false, function () {
                 $panels.css("background-color", msg.bgColor);
-                $panels.find('#title').html('<p style="font-size: ' + msg.titleStyle.size + 'px; color: ' + msg.titleStyle.color + ';">' + msg.title + '</p>');
-                $panels.find('#image').attr('src', panelImageLink(msg.id));
-                $panels.find('#footer').html('<p style="font-size: ' + msg.messageStyle.size + 'px; color: ' + msg.messageStyle.color + ';">' + msg.message + '</p>');
+                var $title = $panels.find('#title');
+                var $footer = $panels.find('#footer');
+                var containTitle = msg.title.length > 0;
+                var containMessage = msg.message.length > 0;
+
+                if (containTitle) {
+                    $title.html('<p style="font-size: ' + msg.titleStyle.size + 'px; color: ' + msg.titleStyle.color + ';">' + escapeHtml(msg.title) + '</p>');
+                    $title.show();
+                } else {
+                    $title.html('');
+                    $title.hide();
+                }
+
+
+                if (containMessage) {
+                    $footer.html('<p style="font-size: ' + msg.messageStyle.size + 'px; color: ' + msg.messageStyle.color + ';">' + escapeHtml(msg.message) + '</p>');
+                    $footer.show();
+                } else {
+                    $footer.html('');
+                    $footer.hide();
+                }
+                var $img = $panels.find('#image').removeClass('fill-panel').attr('src', msg.containImage ? panelImageLink(msg.id) : '').css('height', '');
+                if (msg.containImage) {
+                    $img.show();
+                } else {
+                    $img.hide();
+                }
+                if (!containTitle && !containMessage) {
+                    $img.addClass('fill-panel');
+                } else {
+                    $img.height($panels.height() - $title.height() - $footer.height());
+                }
             })
         });
         rotators.push(new MessageRotator(panels));
