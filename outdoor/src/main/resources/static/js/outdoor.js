@@ -81,7 +81,7 @@ MessageRotator.prototype = {
 var ajustHeight = function($p, $m) {
 	var h = $(window).height();
 	$p.height(h-150);
-	$m.height(100);
+	$m.height(115);
 };
 
 var panelImageLink = function(id) {

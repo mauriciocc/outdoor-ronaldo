@@ -69,19 +69,22 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Ordem</label>
-                                <input type="number" name="order" required class="form-control"/>
+                                <input type="number" name="order" class="form-control" required/>
+                                <div class="help-block with-errors"></div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Tempo na tela</label>
-                                <input type="number" name="timeOnScreen" value="10" required class="form-control"/>
+                                <input type="number" name="timeOnScreen" min="5" required class="form-control"/>
+                                <div class="help-block with-errors"></div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Cor de fundo</label>
-                                <input type="text" name="bgColor" required class="form-control colorpicker"/>
+                                <input type="text" name="bgColor" class="form-control colorpicker" required/>
+                                <div class="help-block with-errors"></div>
                             </div>
                         </div>
                     </div>
@@ -90,19 +93,22 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Titulo</label>
-                                <input type="text" name="title" required class="form-control"/>
+                                <input type="text" name="title" class="form-control"/>
+                                <div class="help-block with-errors"></div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Tamanho Fonte</label>
-                                <input type="number" name="titleStyle.size" required class="form-control"/>
+                                <input type="number" name="titleStyle.size" min="10" class="form-control" required/>
+                                <div class="help-block with-errors"></div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Cor Fonte</label>
-                                <input type="text" name="titleStyle.color" required class="form-control colorpicker"/>
+                                <input type="text" name="titleStyle.color" class="form-control colorpicker" required/>
+                                <div class="help-block with-errors"></div>
                             </div>
                         </div>
                     </div>
@@ -111,19 +117,22 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Mensagem</label>
-                                <input type="text" name="message" required class="form-control"/>
+                                <input type="text" name="message" class="form-control"/>
+                                <div class="help-block with-errors"></div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Tamanho Fonte</label>
-                                <input type="number" name="messageStyle.size" required class="form-control"/>
+                                <input type="number" name="messageStyle.size"  min="10" class="form-control" required/>
+                                <div class="help-block with-errors"></div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Cor Fonte</label>
-                                <input type="text" name="messageStyle.color" required class="form-control colorpicker"/>
+                                <input type="text" name="messageStyle.color" class="form-control colorpicker" required/>
+                                <div class="help-block with-errors"></div>
                             </div>
                         </div>
                     </div>
@@ -219,11 +228,14 @@
     }
 
     function save() {
-        $.post('/api/manage/panels', $form.serializeObject())
-            .then(function (data) {
-                refreshTable();
-                $formModal.modal('hide');
-            });
+        $form.validator('validate');
+        if ($form.find('.has-error').length === 0) {
+            $.post('/api/manage/panels', $form.serializeObject())
+                .then(function (data) {
+                    refreshTable();
+                    $formModal.modal('hide');
+                });
+        }
     }
 
     function list(panels) {
@@ -253,7 +265,7 @@
             return m.id === id;
         });
         $form.fillForm(panel);
-        $imagePreview.attr('src', panelImageLink(panel.id));
+        $imagePreview.attr('src', panel.containImage ? panelImageLink(panel.id) : '');
         $formModal.modal();
     }
 

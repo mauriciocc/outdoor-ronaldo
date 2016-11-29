@@ -41,13 +41,21 @@
                     });
                 });
             }
-            return Message(-1, false, function (tick) {
-                $msgs.html('<div class="marquee">' + escapeHtml(msg.content) + '</div>');
+
+            var content = msg.content;
+            var isStatic = msg.content.indexOf('static:') !== -1;
+            return Message(isStatic ? msg.timeOnScreen : -1, false, function (tick) {
+                if(isStatic !== -1) {
+                    content = content.replace('static:', '');
+                }
+                $msgs.html('<div class="marquee">' + escapeHtml(content) + '</div>');
+                if(!isStatic) {
                 $('.marquee')
                     .bind('finished', function () {
                         $(this).marquee('destroy');
                         rotator.nextMessage();
                     }).marquee({startVisible: false});
+                }
             })
         });
 
