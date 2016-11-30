@@ -3,6 +3,7 @@ package br.univates.view;
 import br.univates.domain.Message;
 import br.univates.domain.Panel;
 import br.univates.domain.RoutedElement;
+import br.univates.service.ClimaTempo;
 import br.univates.service.MessageStore;
 import br.univates.service.PanelStore;
 import br.univates.service.TemperatureMonitor;
@@ -22,12 +23,17 @@ public class ManageCtrl {
     private final MessageStore messageStore;
     private final PanelStore panelStore;
     private final TemperatureMonitor temperatureMonitor;
+    private final ClimaTempo climaTempo;
 
     @Autowired
-    public ManageCtrl(MessageStore messageStore, PanelStore panelStore, TemperatureMonitor temperatureMonitor) {
+    public ManageCtrl(MessageStore messageStore,
+                      PanelStore panelStore,
+                      TemperatureMonitor temperatureMonitor,
+                      ClimaTempo climaTempo) {
         this.messageStore = messageStore;
         this.panelStore = panelStore;
         this.temperatureMonitor = temperatureMonitor;
+        this.climaTempo = climaTempo;
     }
 
     @GetMapping("/messages")
@@ -77,4 +83,10 @@ public class ManageCtrl {
     public int findTemperature() {
         return temperatureMonitor.readPort(TemperatureMonitor.AIN1);
     }
+
+    @GetMapping(value = "/clima-tempo", produces = "text/html")
+    public String findOnClimaTempo(@RequestParam ClimaTempo.City city) {
+        return climaTempo.find(city);
+    }
+
 }

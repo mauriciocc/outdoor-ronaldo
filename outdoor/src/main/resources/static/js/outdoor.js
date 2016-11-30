@@ -7,7 +7,7 @@ var Message = function (time, dynamic, fn) {
 };
 
 
-var createDate = function() {
+var createDate = function () {
     var today = new Date();
     var day = checkTime(today.getDay());
     var month = checkTime(today.getMonth());
@@ -15,7 +15,7 @@ var createDate = function() {
     return day + "/" + month + "/" + year;
 };
 
-var createTime = function() {
+var createTime = function () {
     var today = new Date();
     var h = today.getHours();
     var m = checkTime(today.getMinutes());
@@ -40,29 +40,37 @@ var MessageRotator = function (items) {
 
 MessageRotator.prototype = {
     tick: function () {
-        if(this.isEmpty() || this.paused || this.time < 0) {
+        if (this.isEmpty() || this.paused || this.time < 0 || !this.rendered) {
             return;
         }
         this.time--;
         if (!this.time) {
-           this.nextMessage();
+            this.nextMessage();
         }
-        if (!this.rendered || this.items[this.idx].dynamic) {
+        if (this.items[this.idx].dynamic) {
             this.render();
         }
     },
     isEmpty: function () {
-        return this.idx >= this.items.length;
+        return this.items.length === 0;
     },
     render: function () {
-        if(this.isEmpty()) {
+        if (this.isEmpty()) {
             return;
         }
-        this.items[this.idx].fn(this.time);
-        this.rendered = true;
+        var self = this;
+        var result = this.items[this.idx].fn(this.time);
+        if (typeof result !== 'undefined') {
+            result.always(function () {
+                self.rendered = true;
+            });
+        } else {
+            this.rendered = true;
+        }
+
     },
     nextMessage: function () {
-        if(this.isEmpty()) {
+        if (this.isEmpty()) {
             return;
         }
         this.idx++;
@@ -78,13 +86,13 @@ MessageRotator.prototype = {
     }
 };
 
-var ajustHeight = function($p, $m) {
-	var h = $(window).height();
-	$p.height(h-150);
-	$m.height(115);
+var ajustHeight = function ($p, $m) {
+    var h = $(window).height();
+    $p.height(h - 150);
+    $m.height(115);
 };
 
-var panelImageLink = function(id) {
-    return '/api/manage/panels/'+id+'/image?t='+new Date().getTime();
+var panelImageLink = function (id) {
+    return '/api/manage/panels/' + id + '/image?t=' + new Date().getTime();
 };
 

@@ -1,7 +1,7 @@
 <section id="panels" class="fundo" onclick="clearInterval(intervalId);loadPage('/view/manage/panels.html')">
     <section id="title"></section>
 
-        <img id="image" src="" alt="">
+    <img id="image" src="" alt="">
 
     <section id="footer"></section>
 </section>
@@ -35,26 +35,30 @@
                 });
             }
             if (msg.content === 'lm35') {
-                return Message(msg.timeOnScreen, true, function () {
-                    readLM35().then(function (data) {
-                        $msgs.html(data + "ºC");
-                    });
+                return Message(msg.timeOnScreen, false, function () {
+                    return $.Deferred(function (def) {
+                        readLM35()
+                            .then(function (data) {
+                                $msgs.html(data + "ºC");
+                                def.resolve(data);
+                            }, def.reject);
+                    }).promise();
                 });
             }
 
             var content = msg.content;
             var isStatic = msg.content.indexOf('static:') !== -1;
             return Message(isStatic ? msg.timeOnScreen : -1, false, function (tick) {
-                if(isStatic !== -1) {
+                if (isStatic !== -1) {
                     content = content.replace('static:', '');
                 }
                 $msgs.html('<div class="marquee">' + escapeHtml(content) + '</div>');
-                if(!isStatic) {
-                $('.marquee')
-                    .bind('finished', function () {
-                        $(this).marquee('destroy');
-                        rotator.nextMessage();
-                    }).marquee({startVisible: false});
+                if (!isStatic) {
+                    $('.marquee')
+                        .bind('finished', function () {
+                            $(this).marquee('destroy');
+                            rotator.nextMessage();
+                        }).marquee({startVisible: false});
                 }
             })
         });
@@ -70,32 +74,36 @@
         var panels = data.map(function (msg) {
             return Message(msg.timeOnScreen, false, function () {
                 $panels.css("background-color", msg.bgColor);
-                var $title = $panels.find('#title');
-                var $footer = $panels.find('#footer');
+
+                var $title = $panels.find('#title').html('').hide();
+                var $footer = $panels.find('#footer').html('').hide();
+                var $img = $panels.find('#image').hide();
                 var containTitle = msg.title.length > 0;
                 var containMessage = msg.message.length > 0;
+
+                if (msg.message.indexOf('pt:') != -1) {
+                    return $.Deferred(function (def) {
+                        $.get('/api/manage/clima-tempo?city='+ msg.message.substring(msg.message.indexOf(':')+1))
+                            .then(function (data) {
+                                var $box = $('.bg-box-prev-topo', data);
+                                var text = $box.find("#momento-temperatura").text() + '  - ' + $box.find("#momento-condicao").text();
+                                $title.text(text).show();
+                                def.resolve(data);
+                            }, def.reject);
+                    }).promise();
+                }
 
                 if (containTitle) {
                     $title.html('<p style="font-size: ' + msg.titleStyle.size + 'px; color: ' + msg.titleStyle.color + ';">' + escapeHtml(msg.title) + '</p>');
                     $title.show();
-                } else {
-                    $title.html('');
-                    $title.hide();
                 }
-
-
                 if (containMessage) {
                     $footer.html('<p style="font-size: ' + msg.messageStyle.size + 'px; color: ' + msg.messageStyle.color + ';">' + escapeHtml(msg.message) + '</p>');
                     $footer.show();
-                } else {
-                    $footer.html('');
-                    $footer.hide();
                 }
-                var $img = $panels.find('#image').removeClass('fill-panel').attr('src', msg.containImage ? panelImageLink(msg.id) : '').css('height', '');
+                $img.removeClass('fill-panel').attr('src', msg.containImage ? panelImageLink(msg.id) : '').css('height', '');
                 if (msg.containImage) {
                     $img.show();
-                } else {
-                    $img.hide();
                 }
                 if (!containTitle && !containMessage) {
                     $img.addClass('fill-panel');
@@ -123,6 +131,4 @@
             })
         }
     });
-
-
 </script>
