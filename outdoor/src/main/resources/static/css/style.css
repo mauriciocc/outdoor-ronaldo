@@ -105,3 +105,14 @@ hr {
     overflow: hidden;
     line-height: 100px;
 }
+
+.weather {
+    position: relative;
+    list-style: none;
+    display: inline-block;
+}
+
+.weather > li {
+    position: absolute;
+    list-style: none;
+}

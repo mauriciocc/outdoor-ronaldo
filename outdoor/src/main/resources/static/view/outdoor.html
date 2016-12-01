@@ -1,5 +1,4 @@
 <section id="panels" class="fundo" onclick="clearInterval(intervalId);loadPage('/view/manage/panels.html')">
-    <i class="icon-sun"></i>
     <section id="title"></section>
 
     <img id="image" src="" alt="">
@@ -89,6 +88,34 @@
                             .then(function (data) {
                                 var text = data.temperature + '  - ' + data.description;
                                 $title.text(text).show();
+                                var icon = '';
+                                switch (data.description) {
+                                    case 'Poucas nuvens': {
+                                        icon = '<ul class="weather"><li class="icon-cloud"></li><li class="icon-sunny"></li></ul>';
+                                        break;
+                                    }
+                                    case 'Muitas nuvens': {
+                                        icon = '<ul class="weather"><li class="icon-cloud"></li></ul>';
+                                        break;
+                                    }
+                                    case 'Alguma nebulosidade': {
+                                        icon = '<ul class="weather"><li class="icon-mist"></li></ul>';
+                                        break;
+                                    }
+                                    case 'Chuva': {
+                                        icon = '<ul class="weather"><li class="basecloud"></li><li class="icon-rainy"></li></ul>';
+                                        break;
+                                    }
+                                    case 'Pancada de chuva': {
+                                        icon = '<ul class="weather"><li class="basecloud"></li><li class="icon-drizzle icon-sunny"></li></ul>';
+                                        break;
+                                    }
+                                    case 'Céu encoberto': {
+                                        icon = '<ul class="weather"><li class="basecloud"></li><li class="icon-hail"></li></ul>';
+                                        break;
+                                    }
+                                }
+                                $footer.html(icon).show();
                                 def.resolve(data);
                             }, def.reject);
                     }).promise();
