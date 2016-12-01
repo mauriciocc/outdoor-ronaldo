@@ -1,12 +1,7 @@
 package br.univates.view;
 
-import br.univates.domain.Message;
-import br.univates.domain.Panel;
-import br.univates.domain.RoutedElement;
-import br.univates.service.ClimaTempo;
-import br.univates.service.MessageStore;
-import br.univates.service.PanelStore;
-import br.univates.service.TemperatureMonitor;
+import br.univates.domain.*;
+import br.univates.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
@@ -84,8 +79,8 @@ public class ManageCtrl {
         return temperatureMonitor.readPort(TemperatureMonitor.AIN1);
     }
 
-    @GetMapping(value = "/clima-tempo", produces = "text/html")
-    public String findOnClimaTempo(@RequestParam ClimaTempo.City city) {
+    @GetMapping(value = "/clima-tempo")
+    public Weather findOnClimaTempo(@RequestParam City city) {
         return climaTempo.find(city);
     }
 

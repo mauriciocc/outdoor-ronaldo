@@ -1,5 +1,7 @@
 package br.univates.service;
 
+import br.univates.domain.City;
+import br.univates.domain.Weather;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -10,7 +12,7 @@ public class ClimaTempoTest {
 
     @Test
     public void find() throws Exception {
-        String result = ct.find(ClimaTempo.City.Lajeado);
+        Weather result = ct.find(City.Lajeado);
         System.out.println(result);
     }
 

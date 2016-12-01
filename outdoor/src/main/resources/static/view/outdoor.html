@@ -1,10 +1,12 @@
 <section id="panels" class="fundo" onclick="clearInterval(intervalId);loadPage('/view/manage/panels.html')">
+    <i class="icon-sun"></i>
     <section id="title"></section>
 
     <img id="image" src="" alt="">
 
     <section id="footer"></section>
 </section>
+
 
 <section id="messages" class="relogio" onclick="clearInterval(intervalId);loadPage('/view/manage/messages.html')">
 
@@ -85,8 +87,7 @@
                     return $.Deferred(function (def) {
                         $.get('/api/manage/clima-tempo?city='+ msg.message.substring(msg.message.indexOf(':')+1))
                             .then(function (data) {
-                                var $box = $('.bg-box-prev-topo', data);
-                                var text = $box.find("#momento-temperatura").text() + '  - ' + $box.find("#momento-condicao").text();
+                                var text = data.temperature + '  - ' + data.description;
                                 $title.text(text).show();
                                 def.resolve(data);
                             }, def.reject);
