@@ -1,9 +1,4 @@
 <section id="panels" class="fundo" onclick="clearInterval(intervalId);loadPage('/view/manage/panels.html')">
-    <section id="title"></section>
-
-    <img id="image" src="" alt="">
-
-    <section id="footer"></section>
 </section>
 
 
@@ -11,10 +6,42 @@
 
 </section>
 
+<script id="panel-template" type="text/html">
+    <% if(title) { %>
+    <section id="title">
+        <p style="font-size: ${titleStyle.size}px; color: ${titleStyle.color};">
+            ${title}
+        </p>
+    </section>
+    <% } %>
+
+    <% if(imageLink) { %>
+        <img id="image" src="${imageLink}" class="${!title && !message ? 'fill-panel' : ''}"/>
+    <% } %>
+
+    <% if(message) { %>
+    <section id="footer">
+        <p style="font-size: ${messageStyle.size}px; color: ${messageStyle.color};">
+            ${message}
+        </p>
+    </section>
+    <% } %>
+</script>
+
+<script id="panel-weather" type="text/html">
+    <ul class="weather">
+        <% icons.forEach(function(icon) { %>
+            <li class="${icon}"></li>
+        <% }) %>
+    </ul>
+</script>
+
 <script type="text/javascript">
     var rotators = [];
 
     var $msgs = $('#messages');
+
+
 
     function readLM35() {
         return $.get('/api/manage/temperature');
@@ -70,6 +97,8 @@
 
 
     //------------------------------------------------
+    var panelTemplate = _.template($('#panel-template').text());
+    var weatherTemplate = _.template($('#panel-weather').text());
     var $panels = $('#panels');
     $.getJSON('/api/manage/panels').then(function (data) {
         var panels = data.map(function (msg) {
@@ -78,66 +107,55 @@
 
                 var $title = $panels.find('#title').html('').hide();
                 var $footer = $panels.find('#footer').html('').hide();
-                var $img = $panels.find('#image').hide();
-                var containTitle = msg.title.length > 0;
-                var containMessage = msg.message.length > 0;
 
                 if (msg.message.indexOf('pt:') != -1) {
                     return $.Deferred(function (def) {
                         $.get('/api/manage/clima-tempo?city='+ msg.message.substring(msg.message.indexOf(':')+1))
                             .then(function (data) {
-                                var text = data.temperature + '  - ' + data.description;
-                                $title.text(text).show();
-                                var icon = '';
+                                data.icons = [];
                                 switch (data.description) {
                                     case 'Poucas nuvens': {
-                                        icon = '<ul class="weather"><li class="icon-cloud"></li><li class="icon-sunny"></li></ul>';
+                                        icons.push("icon-cloud", "icon-sunny");
                                         break;
                                     }
                                     case 'Muitas nuvens': {
-                                        icon = '<ul class="weather"><li class="icon-cloud"></li></ul>';
+                                        icons.push("icon-cloud");
                                         break;
                                     }
                                     case 'Alguma nebulosidade': {
-                                        icon = '<ul class="weather"><li class="icon-mist"></li></ul>';
+                                        icons.push("icon-mist");
                                         break;
                                     }
                                     case 'Chuva': {
-                                        icon = '<ul class="weather"><li class="basecloud"></li><li class="icon-rainy"></li></ul>';
+                                        icons.push("basecloud", "icon-rainy");
                                         break;
                                     }
                                     case 'Pancada de chuva': {
-                                        icon = '<ul class="weather"><li class="basecloud"></li><li class="icon-drizzle icon-sunny"></li></ul>';
+                                        icons.push("basecloud", "icon-drizzle icon-sunny");
                                         break;
                                     }
                                     case 'Céu encoberto': {
-                                        icon = '<ul class="weather"><li class="basecloud"></li><li class="icon-hail"></li></ul>';
+                                        icons.push("basecloud", "icon-hail");
                                         break;
                                     }
                                 }
-                                $footer.html(icon).show();
+                                $panels.html(weatherTemplate(data));
                                 def.resolve(data);
                             }, def.reject);
                     }).promise();
                 }
 
-                if (containTitle) {
-                    $title.html('<p style="font-size: ' + msg.titleStyle.size + 'px; color: ' + msg.titleStyle.color + ';">' + escapeHtml(msg.title) + '</p>');
-                    $title.show();
-                }
-                if (containMessage) {
-                    $footer.html('<p style="font-size: ' + msg.messageStyle.size + 'px; color: ' + msg.messageStyle.color + ';">' + escapeHtml(msg.message) + '</p>');
-                    $footer.show();
-                }
-                $img.removeClass('fill-panel').attr('src', msg.containImage ? panelImageLink(msg.id) : '').css('height', '');
-                if (msg.containImage) {
-                    $img.show();
-                }
-                if (!containTitle && !containMessage) {
-                    $img.addClass('fill-panel');
-                } else {
-                    $img.height($panels.height() - $title.height() - $footer.height());
-                }
+                $panels.html(
+                    panelTemplate({
+                        title: escapeHtml(msg.title),
+                        titleStyle: msg.titleStyle,
+                        message: escapeHtml(msg.message),
+                        messageStyle: msg.messageStyle,
+                        imageLink: msg.containImage ? panelImageLink(msg.id) : ''
+                    })
+                );
+
+                $('#image').height($panels.height() - $panels.find('#title').height() - $panels.find('#footer').height());
             })
         });
         rotators.push(new MessageRotator(panels));

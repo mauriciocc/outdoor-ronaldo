@@ -65,46 +65,7 @@ hr {
     max-width: 250px;
 }
 
-/* Tonhooo */
-/*body, html {
-    margin: 0px;
-    background-color: #eeeeee;
-    overflow: hidden;
-}*/
-
-.fundo {
-    background: #414b66;
-    width: 101%;
-    /* display: table; */
-    box-shadow: 0px 5px 20px -2px rgba(0, 0, 0, 0.75);
-}
-
-.imagem {
-    background: white;
-    height: 80%;
-}
-
-.imagem img {
-    width: 100%;
-    height: 100%;
-}
-
-.imagem img:hover {
-    opacity: 0.9;
-}
-
-.relogio {
-    font-size: 7em;
-    color: #444;
-    padding: 10px;
-    font-family: "DS-Digital";
-    background: whitesmoke;
-    text-align: center;
-    box-shadow: inset 0px -1px 14px -2px rgba(126, 126, 126, 0.75);
-    white-space: nowrap;
-    overflow: hidden;
-    line-height: 100px;
-}
+/* Icons */
 
 .weather {
     position: relative;
@@ -115,4 +76,24 @@ hr {
 .weather > li {
     position: absolute;
     list-style: none;
+}
+
+/* Tonhooo */
+
+.fundo {
+    width: 100%;
+    box-shadow: 0px 5px 20px -2px rgba(0, 0, 0, 0.75);
+}
+
+.relogio {
+    font-size: 7em;
+    color: #444;
+    padding: 10px;
+    font-family: "DS-Digital", 'Helvetica Neue', sans-serif;
+    background: whitesmoke;
+    text-align: center;
+    box-shadow: inset 0 -1px 14px -2px rgba(126, 126, 126, 0.75);
+    white-space: nowrap;
+    overflow: hidden;
+    line-height: 100px;
 }
