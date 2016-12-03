@@ -1,6 +1,6 @@
 <section class="manage-element">
     <div class="row top-options">
-        <div class="col-md-6">
+        <div class="col-xs-6">
             <button type="button" class="btn btn-link" onclick="loadPage('/view/outdoor.html')">
                 <span class="glyphicon glyphicon-chevron-left"/>
                 Voltar
@@ -8,7 +8,7 @@
         </div>
 
 
-        <div class="col-md-6 text-right">
+        <div class="col-xs-6 text-right">
             <button type="button" class="btn btn-success" onclick="newElement()">
                 <span class="glyphicon glyphicon-plus-sign"/>
                 Novo Painel
@@ -66,21 +66,47 @@
                     <input type="hidden" name="image.type"/>
 
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label>Tipo: </label>
+                                <div class="radio-inline">
+                                    <label>
+                                        <input type="radio" name="type" value="Regular" checked>
+                                        Normal
+                                    </label>
+                                </div>
+                                <div class="radio-inline">
+                                    <label>
+                                        <input type="radio" name="type" value="Image">
+                                        Imagem
+                                    </label>
+                                </div>
+                                <div class="radio-inline">
+                                    <label>
+                                        <input type="radio" name="type" value="Weather">
+                                        Previsão do Tempo
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-4">
                             <div class="form-group">
                                 <label>Ordem</label>
                                 <input type="number" name="order" class="form-control" required/>
                                 <div class="help-block with-errors"></div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-xs-4">
                             <div class="form-group">
                                 <label>Tempo na tela</label>
                                 <input type="number" name="timeOnScreen" min="5" required class="form-control"/>
                                 <div class="help-block with-errors"></div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-xs-4">
                             <div class="form-group">
                                 <label>Cor de fundo</label>
                                 <input type="text" name="bgColor" class="form-control colorpicker" required/>
@@ -90,21 +116,21 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-xs-4">
                             <div class="form-group">
                                 <label>Titulo</label>
                                 <input type="text" name="title" class="form-control"/>
                                 <div class="help-block with-errors"></div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-xs-4">
                             <div class="form-group">
                                 <label>Tamanho Fonte</label>
                                 <input type="number" name="titleStyle.size" min="10" class="form-control" required/>
                                 <div class="help-block with-errors"></div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-xs-4">
                             <div class="form-group">
                                 <label>Cor Fonte</label>
                                 <input type="text" name="titleStyle.color" class="form-control colorpicker" required/>
@@ -114,21 +140,21 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-xs-4">
                             <div class="form-group">
                                 <label>Mensagem</label>
                                 <input type="text" name="message" class="form-control"/>
                                 <div class="help-block with-errors"></div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-xs-4">
                             <div class="form-group">
                                 <label>Tamanho Fonte</label>
                                 <input type="number" name="messageStyle.size"  min="10" class="form-control" required/>
                                 <div class="help-block with-errors"></div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-xs-4">
                             <div class="form-group">
                                 <label>Cor Fonte</label>
                                 <input type="text" name="messageStyle.color" class="form-control colorpicker" required/>
@@ -137,16 +163,16 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-xs-4">
                             <input type="file" onchange="previewFile()" accept="image/*" class="imageUpload">
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-xs-2">
                             <button type="button" onclick="removeImage()" class="btn btn-warning btn-sm">
                                 <span class="glyphicon glyphicon-remove"/>
                                 Remover Imagem
                             </button>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-xs-6">
                             <img class="image-preview" src="" style="max-width: 100px"/>
                         </div>
                     </div>
@@ -198,6 +224,8 @@
     var $formModal = $("#form-modal");
     var $imagePreview = $('.image-preview');
 
+    var tableRowTemplate = _.template($('#table-row-template').text());
+
     function resetForm() {
         $form.find("input").val('');
         var order = 0;
@@ -244,23 +272,14 @@
             return 'background-color: '+bg+';font-size: ' + fs.size + 'px; color: ' + fs.color + ';';
         };
         return panels.map(function (p) {
-            return '<tr>' +
-                '<td>' + p.order + '</td>' +
-                '<td>' + p.id + '</td>' +
-                '<td>' + p.timeOnScreen + '</td>' +
-                '<td style="' + st(p.bgColor, p.titleStyle) + '"><div class="hide-overflow">' + escapeHtml(p.title) + '</div></td>' +
-                '<td style="' + st(p.bgColor, p.messageStyle) + '"><div class="hide-overflow">' + escapeHtml(p.message) + '</div></td>' +
-                '<td>' +
-                (p.containImage ? '<img src="' + panelImageLink(p.id) + '" width="50"/>' : '-') + '</td>' +
-                '<td>' +
-                '<button type="button" class="btn btn-warning btn-xs" onclick="edit(' + p.id + ')" title="Editar"><span class="glyphicon glyphicon-edit"/></button> ' +
-                '<button type="button" class="btn btn-danger btn-xs" onclick="remove(' + p.id + ')" title="Remover"><span class="glyphicon glyphicon-remove"/></button> ' +
-                '</td>' +
-                '</tr>'
+            p.tStyle = st(p.bgColor, p.titleStyle);
+            p.mStyle = st(p.bgColor, p.messageStyle);
+            p.imageLink = panelImageLink(p.id);
+            return tableRowTemplate(p);
         });
     }
 
-    function edit(id) {
+    function editPanel(id) {
         resetForm();
         var panel = panels.find(function (m) {
             return m.id === id;
@@ -271,7 +290,7 @@
         toggleColorpickers();
     }
 
-    function remove(id) {
+    function removePanel(id) {
         $.delete('/api/manage/panels/' + id).then(function () {
             refreshTable();
         });
@@ -300,4 +319,36 @@
         $('.colorpicker').colorpicker('destroy').colorpicker();
     }
 
+</script>
+
+
+<script id="table-row-template" type="text/html">
+    <tr>
+        <td>${order}</td>
+        <td>${id}</td>
+        <td>${timeOnScreen}</td>
+        <td style="${tStyle}">${title}</td>
+        <td style="${mStyle}">${message}</td>
+        <td>
+            <% if(containImage) { %>
+                <img src="${imageLink}" style="width: 50px"/>
+            <% } else { %>
+                -
+            <% } %>
+        </td>
+        <td>
+            <button type="button"
+                    class="btn btn-warning btn-xs"
+                    onclick="editPanel(${id})"
+                    title="Editar">
+                <span class="glyphicon glyphicon-edit"/>
+            </button>
+            <button type="button"
+                    class="btn btn-danger btn-xs"
+                    onclick="removePanel(${id})"
+                    title="Remover">
+                <span class="glyphicon glyphicon-remove"/>
+            </button>
+        </td>
+    </tr>
 </script>

@@ -1,6 +1,6 @@
 <section class="manage-element">
     <div class="row top-options">
-        <div class="col-md-6">
+        <div class="col-xs-6">
             <button type="button" class="btn btn-link" onclick="loadPage('/view/outdoor.html')">
                 <span class="glyphicon glyphicon-chevron-left"/>
                 Voltar
@@ -8,7 +8,7 @@
         </div>
 
 
-        <div class="col-md-6 text-right">
+        <div class="col-xs-6 text-right">
             <button type="button" class="btn btn-success" onclick="newElement()">
                 <span class="glyphicon glyphicon-plus-sign"/>
                 Nova Mensagem
@@ -61,14 +61,40 @@
                     <input type="hidden" name="id"/>
 
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label>Tipo: </label>
+                            <div class="radio-inline">
+                                <label>
+                                    <input type="radio" name="type" value="Animated" checked>
+                                    Animada
+                                </label>
+                            </div>
+                            <div class="radio-inline">
+                                <label>
+                                    <input type="radio" name="type" value="Static">
+                                    Estática
+                                </label>
+                            </div>
+                            <div class="radio-inline">
+                                <label>
+                                    <input type="radio" name="type" value="System">
+                                    Variável do sistema
+                                </label>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-4">
                             <div class="form-group">
                                 <label>Ordem</label>
                                 <input type="number" name="order" required class="form-control"/>
                                 <div class="help-block with-errors"></div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-xs-4">
                             <div class="form-group">
                                 <label>Tempo na tela</label>
                                 <input type="number" name="timeOnScreen" value="10" min="5" required
@@ -79,7 +105,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-xs-12">
                             <div class="form-group">
                                 <label>Mensagem</label>
                                 <input type="text" name="content" required min="1" class="form-control"/>
@@ -111,6 +137,7 @@
     var $formModal = $("#form-modal");
     var $imagePreview = $('.image-preview');
 
+    var tableRowTemplate = _.template($('#table-row-template').text());
     function resetForm() {
         $form.find("input").val('');
         var order = 0;
@@ -143,20 +170,12 @@
 
     function list(panels) {
         return panels.map(function (p) {
-            return '<tr>' +
-                '<td>' + p.order + '</td>' +
-                '<td>' + p.id + '</td>' +
-                '<td>' + p.timeOnScreen + '</td>' +
-                '<td>' + escapeHtml(p.content) + '</td>' +
-                '<td>' +
-                '<button type="button" class="btn btn-warning btn-xs" onclick="edit(' + p.id + ')" title="Editar"><span class="glyphicon glyphicon-edit"/></button> ' +
-                '<button type="button" class="btn btn-danger btn-xs" onclick="remove(' + p.id + ')" title="Remover"><span class="glyphicon glyphicon-remove"/></button> ' +
-                '</td>' +
-                '</tr>'
+            p.content = escapeHtml(p.content);
+            return tableRowTemplate(p);
         });
     }
 
-    function edit(id) {
+    function editMsg(id) {
         resetForm();
         var panel = panels.find(function (m) {
             return m.id === id;
@@ -165,7 +184,7 @@
         $formModal.modal();
     }
 
-    function remove(id) {
+    function removeMsg(id) {
         $.delete('/api/manage/messages/' + id).then(function () {
             refreshTable();
         });
@@ -181,4 +200,27 @@
 
     }
     refreshTable();
+</script>
+
+<script id="table-row-template" type="text/html">
+    <tr>
+        <td>${order}</td>
+        <td>${id}</td>
+        <td>${timeOnScreen}</td>
+        <td>${content}</td>
+        <td>
+            <button type="button"
+                    class="btn btn-warning btn-xs"
+                    onclick="editMsg(${id})"
+                    title="Editar">
+                <span class="glyphicon glyphicon-edit"/>
+            </button>
+            <button type="button"
+                    class="btn btn-danger btn-xs"
+                    onclick="removeMsg(${id})"
+                    title="Remover">
+                <span class="glyphicon glyphicon-remove"/>
+            </button>
+        </td>
+    </tr>
 </script>

@@ -1,20 +1,25 @@
 package br.univates.domain;
 
 public enum City {
-    Lajeado(1399),
-    Gramado(780),
-    POA(363),
-    Guapore(2011),
-    Torres(370);
+    Lajeado(1399, "Lajeado"),
+    Gramado(780, "Gramado"),
+    POA(363, "Porto Alegre"),
+    Guapore(2011, "Guaporé"),
+    Torres(370, "Torres");
 
     private final int id;
+    private final String label;
 
-    City(int id) {
+    City(int id, String label) {
         this.id = id;
+        this.label = label;
     }
 
     public int getId() {
         return id;
     }
 
+    public String getLabel() {
+        return label;
+    }
 }
