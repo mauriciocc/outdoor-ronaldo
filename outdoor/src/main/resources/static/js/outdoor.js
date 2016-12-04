@@ -1,3 +1,5 @@
+'use strict';
+
 var Message = function (time, dynamic, fn) {
     return {
         fn: fn,

@@ -1,3 +1,5 @@
+'use strict';
+
 function loadPage(uri) {
     $.get(uri)
         .then(function (data) {
@@ -33,10 +35,19 @@ $.fn.fillForm = function (obj) {
     var fform = function (props, prevKey) {
         for (var key in props) {
             var value = props[key];
-            if(typeof value === 'object') {
-                fform(value, key+".")
+            if (typeof value === 'object') {
+                fform(value, key + ".")
             } else {
-                this.find("input[name='" + prevKey+key + "']").val(value)
+                this.find("[name='" + prevKey + key + "']").each(function (idx, input) {
+                    var $input = $(input);
+                    if($input.attr('type') === 'radio') {
+                        if($input.val() === value) {
+                            $input.prop('checked', true);
+                        }
+                    } else {
+                        $input.val(value)
+                    }
+                });
             }
         }
     }.bind(this);
@@ -58,7 +69,7 @@ $.put = function (url, data) {
     });
 };
 
-Array.prototype.find = Array.prototype.find || function(callback) {
+Array.prototype.find = Array.prototype.find || function (callback) {
         if (this === null) {
             throw new TypeError('Array.prototype.find called on null or undefined');
         } else if (typeof callback !== 'function') {
@@ -70,7 +81,7 @@ Array.prototype.find = Array.prototype.find || function(callback) {
         var thisArg = arguments[1];
         for (var i = 0; i < length; i++) {
             var element = list[i];
-            if ( callback.call(thisArg, element, i, list) ) {
+            if (callback.call(thisArg, element, i, list)) {
                 return element;
             }
         }
@@ -89,4 +100,12 @@ function escapeHtml(string) {
     return String(string).replace(/[&<>"'\/]/g, function (s) {
         return entityMap[s];
     });
+}
+
+function compileTemplate(selector) {
+    return _.template($(selector).text())
+}
+
+function removeConfirmation() {
+    return window.confirm("Tem certeza que deseja excluir este elemento?");
 }
