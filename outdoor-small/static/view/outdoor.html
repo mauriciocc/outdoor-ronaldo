@@ -52,9 +52,15 @@
                     $panels.html(
                         panelTemplate({
                             title: escapeHtml(msg.title),
-                            titleStyle: msg.titleStyle,
+                            titleStyle: {
+                                size: msg.titleFontSize,
+                                color: msg.titleFontColor
+                            },
                             message: escapeHtml(msg.message),
-                            messageStyle: msg.messageStyle,
+                            messageStyle: {
+                                size: msg.messageFontSize,
+                                color: msg.messageFontColor
+                            },
                             imageLink: msg.imageContent.length > 0 ? panelImageLink(msg.id) : ''
                         })
                     );

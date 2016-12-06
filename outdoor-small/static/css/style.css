@@ -67,6 +67,7 @@ hr {
 
 .weather-container {
     margin-top: 20%;
+    margin-top: 25vh;
 }
 .weather-container .weather {
     width: 165px;

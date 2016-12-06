@@ -5,11 +5,13 @@ public class Panel extends RoutedElement {
 
     private PanelType type = PanelType.Regular;
     private String title = "SEM TITULO";
-    private FontStyle titleStyle = new FontStyle(18, "#333");
+    private Integer titleFontSize = 18;
+    private String titleFontColor = "#333";
     private String imageContent = "";
     private String imageType = "";
     private String message = "SEM MENSAGEM";
-    private FontStyle messageStyle = new FontStyle(18, "#333");
+    private Integer messageFontSize = 14;
+    private String messageFontColor = "#333";
     private String bgColor = "#FFF";
 
     public Panel() {
@@ -31,28 +33,12 @@ public class Panel extends RoutedElement {
         this.title = title;
     }
 
-    public FontStyle getTitleStyle() {
-        return titleStyle;
-    }
-
-    public void setTitleStyle(FontStyle titleStyle) {
-        this.titleStyle = titleStyle;
-    }
-
     public String getMessage() {
         return message;
     }
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public FontStyle getMessageStyle() {
-        return messageStyle;
-    }
-
-    public void setMessageStyle(FontStyle messageStyle) {
-        this.messageStyle = messageStyle;
     }
 
     public String getBgColor() {
@@ -81,6 +67,38 @@ public class Panel extends RoutedElement {
 
     public boolean isContainImage() {
         return !imageContent.isEmpty();
+    }
+
+    public Integer getTitleFontSize() {
+        return titleFontSize;
+    }
+
+    public void setTitleFontSize(Integer titleFontSize) {
+        this.titleFontSize = titleFontSize;
+    }
+
+    public String getTitleFontColor() {
+        return titleFontColor;
+    }
+
+    public void setTitleFontColor(String titleFontColor) {
+        this.titleFontColor = titleFontColor;
+    }
+
+    public Integer getMessageFontSize() {
+        return messageFontSize;
+    }
+
+    public void setMessageFontSize(Integer messageFontSize) {
+        this.messageFontSize = messageFontSize;
+    }
+
+    public String getMessageFontColor() {
+        return messageFontColor;
+    }
+
+    public void setMessageFontColor(String messageFontColor) {
+        this.messageFontColor = messageFontColor;
     }
 }
 

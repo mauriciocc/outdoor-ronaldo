@@ -123,14 +123,14 @@
                             <div class="col-xs-4">
                                 <div class="form-group">
                                     <label>Tamanho Fonte</label>
-                                    <input type="number" name="titleStyle.size" min="10" class="form-control" required/>
+                                    <input type="number" name="titleFontSize" min="10" class="form-control" required/>
                                     <div class="help-block with-errors"></div>
                                 </div>
                             </div>
                             <div class="col-xs-4">
                                 <div class="form-group">
                                     <label>Cor Fonte</label>
-                                    <input type="text" name="titleStyle.color" class="form-control colorpicker"
+                                    <input type="text" name="titleFontColor" class="form-control colorpicker"
                                            required/>
                                     <div class="help-block with-errors"></div>
                                 </div>
@@ -148,7 +148,7 @@
                             <div class="col-xs-4">
                                 <div class="form-group">
                                     <label>Tamanho Fonte</label>
-                                    <input type="number" name="messageStyle.size" min="10" class="form-control"
+                                    <input type="number" name="messageFontSize" min="10" class="form-control"
                                            required/>
                                     <div class="help-block with-errors"></div>
                                 </div>
@@ -156,7 +156,7 @@
                             <div class="col-xs-4">
                                 <div class="form-group">
                                     <label>Cor Fonte</label>
-                                    <input type="text" name="messageStyle.color" class="form-control colorpicker"
+                                    <input type="text" name="messageFontColor" class="form-control colorpicker"
                                            required/>
                                     <div class="help-block with-errors"></div>
                                 </div>
@@ -275,14 +275,10 @@
             order: order,
             bgColor: '#FFF',
             timeOnScreen: 30,
-            titleStyle: {
-                size: 18,
-                color: '#333'
-            },
-            messageStyle: {
-                size: 14,
-                color: '#333'
-            }
+            titleFontSize: 18,
+            titleFontColor: '#333',
+            messageFontSize: 14,
+            messageFontColor: '#333'
         });
     }
 
@@ -325,12 +321,12 @@
 
     var typeLabels = {'Regular': 'Normal', 'Weather': 'Previsão do Tempo'};
     function list(panels) {
-        var st = function (bg, fs) {
-            return 'background-color: ' + bg + ';font-size: ' + fs.size + 'px; color: ' + fs.color + ';';
+        var st = function (bg, fs, fc) {
+            return 'background-color: ' + bg + ';font-size: ' + fs + 'px; color: ' + fc + ';';
         };
         return panels.map(function (p) {
-            p.tStyle = st(p.bgColor, p.titleStyle);
-            p.mStyle = st(p.bgColor, p.messageStyle);
+            p.tStyle = st(p.bgColor, p.titleFontSize, p.titleFontColor);
+            p.mStyle = st(p.bgColor, p.messageFontSize, p.messageFontColor);
             p.imageLink = panelImageLink(p.id);
             p.typeLabel = typeLabels[p.type];
             return tableRowTemplate(p);
