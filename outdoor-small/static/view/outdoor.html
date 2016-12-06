@@ -1,12 +1,24 @@
-<section id="panels" class="fundo" onclick="clearInterval(intervalId);loadPage('/view/manage/panels.html')">
+<section id="panels" class="fundo" onclick="clearInterval(intervalId);loadPage('/view/manage/panels.html')"
+         onmouseenter="showEditLabel(event);" onmouseleave="hideEditLabel(event);">
 </section>
 
 
-<section id="messages" class="relogio" onclick="clearInterval(intervalId);loadPage('/view/manage/messages.html')">
-
+<section id="messages" class="relogio" onclick="clearInterval(intervalId);loadPage('/view/manage/messages.html')"
+         onmouseenter="showEditLabel(event);" onmouseleave="hideEditLabel(event);">
+    <div class="edit-label">Clique para editar</div>
 </section>
 
 <script type="text/javascript">
+    function showEditLabel(e) {
+        var $this = $(e.target);
+        $this.prepend('<div class="edit-label">Clique para editar</div>')
+    }
+
+    function hideEditLabel(e) {
+        var $this = $(e.target);
+        $this.find('.edit-label').remove();
+    }
+
     var rotators = [];
     var $msgs = $('#messages');
 
