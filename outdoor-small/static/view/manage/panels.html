@@ -262,7 +262,7 @@
     var tableRowTemplate = _.template($('#table-row-template').text());
 
     function resetForm() {
-        $form.find("input[type!='radio']").val('');
+        $form.find("input[type!='radio'], select").val('');
         var order = 0;
         panels.forEach(function (p) {
             order = Math.max(order, p.order);

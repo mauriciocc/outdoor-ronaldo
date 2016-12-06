@@ -1,4 +1,4 @@
-package br.univates;
+package br.univates.utils;
 
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.TypeAdapter;

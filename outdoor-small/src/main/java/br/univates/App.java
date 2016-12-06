@@ -5,6 +5,7 @@ import br.univates.service.ClimaTempo;
 import br.univates.service.MessageStore;
 import br.univates.service.PanelStore;
 import br.univates.service.TemperatureMonitor;
+import br.univates.utils.IntegerTypeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
@@ -100,7 +101,8 @@ class App implements HttpHandler {
                 if ("panels".equals(splitedUri[0])) {
                     int id = Integer.parseInt(splitedUri[1]);
                     panelStore.imageRef(id).ifPresent(file -> {
-                        t.getResponseHeaders().add("Content-Type", "image");
+                        t.getResponseHeaders().remove("Content-Type");
+                        t.getResponseHeaders().add("Content-Type", "image/"+file.toString().split("\\.")[1]);
                         try {
                             t.sendResponseHeaders(200, Files.size(file));
                             Files.copy(file, os);
