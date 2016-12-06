@@ -1,0 +1,123 @@
+<section id="panels" class="fundo" onclick="clearInterval(intervalId);loadPage('/view/manage/panels.html')">
+</section>
+
+
+<section id="messages" class="relogio" onclick="clearInterval(intervalId);loadPage('/view/manage/messages.html')">
+
+</section>
+
+<script type="text/javascript">
+    var rotators = [];
+    var $msgs = $('#messages');
+
+    (function() {
+        $.getJSON('/api/manage/messages').then(function (data) {
+            var rotator;
+
+            var messages = data.map(function (msg) {
+                return Message.createFromData($msgs, msg, function () { return rotator; });
+            });
+
+            rotator = new MessageRotator(messages);
+            rotators.push(rotator);
+        });
+    })();
+
+    //------------------------------------------------
+
+    var $panels = $('#panels');
+
+    (function () {
+        var panelTemplate = _.template($('#panel-template').text());
+        var weatherTemplate = _.template($('#panel-weather').text());
+        $.getJSON('/api/manage/panels').then(function (data) {
+            var panels = data.map(function (msg) {
+                return Message(msg.timeOnScreen, false, function () {
+                    $panels.css("background-color", msg.bgColor);
+
+                    // If its weather panel
+                    if (Message.isWeather(msg)) {
+                        $panels.html('Carregando...');
+                        return $.Deferred(function (def) {
+                            $.get('/api/manage/clima-tempo?city='+ Message.extractCity(msg))
+                                .then(function (data) {
+                                    data.icons = weatherMapDescriptionToIconSet(data.description);
+                                    data.weekDay = weekDayDescription(new Date().getDay());
+                                    $panels.html(weatherTemplate(data));
+                                    def.resolve(data);
+                                }, def.reject);
+                        }).promise();
+                    }
+
+                    $panels.html(
+                        panelTemplate({
+                            title: escapeHtml(msg.title),
+                            titleStyle: msg.titleStyle,
+                            message: escapeHtml(msg.message),
+                            messageStyle: msg.messageStyle,
+                            imageLink: msg.imageContent.length > 0 ? panelImageLink(msg.id) : ''
+                        })
+                    );
+
+                    $('#image').height(
+                        $panels.height()
+                        - $panels.find('#title').height()
+                        - $panels.find('#footer').height()
+                    );
+                })
+            });
+            rotators.push(new MessageRotator(panels));
+        });
+    })();
+
+    var intervalId = setInterval(function () {
+        rotators.forEach(function (r) {
+            r.tick();
+        });
+        console.log('tick');
+    }, 1000);
+
+    $(window).on('resize', function () {
+        ajustHeight($panels, $msgs);
+    }).trigger('resize').on('keydown', function (e) {
+        if (e.which === 32) {
+            rotators.forEach(function (r) {
+                r.togglePause();
+            })
+        }
+    });
+</script>
+
+
+<script id="panel-template" type="text/html">
+    <% if(title) { %>
+    <section id="title">
+        <p style="font-size: ${titleStyle.size}px; color: ${titleStyle.color};">
+            ${title}
+        </p>
+    </section>
+    <% } %>
+
+    <% if(imageLink) { %>
+    <img id="image" src="${imageLink}" class="${!title && !message ? 'fill-panel' : ''}"/>
+    <% } %>
+
+    <% if(message) { %>
+    <section id="footer">
+        <p style="font-size: ${messageStyle.size}px; color: ${messageStyle.color};">
+            ${message}
+        </p>
+    </section>
+    <% } %>
+</script>
+
+<script id="panel-weather" type="text/html">
+    <h1>${cityLabel}</h1>
+    <h3>${weekDay}</h3>
+    <h2>${temperature} - ${description}</h2>
+    <ul class="weather">
+        <% icons.forEach(function(icon) { %>
+        <li class="${icon}"></li>
+        <% }) %>
+    </ul>
+</script>

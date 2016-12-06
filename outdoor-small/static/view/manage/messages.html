@@ -1,0 +1,268 @@
+<section class="manage-element">
+    <div class="row top-options">
+        <div class="col-xs-6">
+            <button type="button" class="btn btn-link" onclick="loadPage('/view/outdoor.html')">
+                <span class="glyphicon glyphicon-chevron-left"/>
+                Voltar
+            </button>
+        </div>
+
+
+        <div class="col-xs-6 text-right">
+            <button type="button" class="btn btn-success" onclick="newElement()">
+                <span class="glyphicon glyphicon-plus-sign"/>
+                Nova Mensagem
+            </button>
+        </div>
+
+    </div>
+
+    <section id="manage-panels">
+
+        <fieldset>
+            <legend>Mensagens</legend>
+            <table id="panels-table" class="table table-condensed table-hover table-striped">
+                <thead>
+                <th>Ordem</th>
+                <th>Id</th>
+                <th>Tipo</th>
+                <th>Tempo na tela</th>
+                <th>Mensagem</th>
+                <th>Ações</th>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </fieldset>
+
+
+    </section>
+
+</section>
+<!-- Modal -->
+<div class="modal fade" id="form-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                <h4 class="modal-title">
+                    <span class="glyphicon glyphicon-info-sign" title="
+                    - static:<message> para textos estaticos
+                    - Dinamicos:
+                        - date
+                        - time
+                        - lm35"></span>
+                    Gerenciamento de Mensagens
+                </h4>
+            </div>
+            <div class="modal-body">
+
+                <form id="panel-form">
+                    <input type="hidden" name="id"/>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label>Tipo: </label>
+                                <div class="radio-inline">
+                                    <label>
+                                        <input type="radio" name="type" value="Animated" onclick="adjustFields();">
+                                        Animada
+                                    </label>
+                                </div>
+                                <div class="radio-inline">
+                                    <label>
+                                        <input type="radio" name="type" value="Static" onclick="adjustFields();">
+                                        Estática
+                                    </label>
+                                </div>
+                                <div class="radio-inline">
+                                    <label>
+                                        <input type="radio" name="type" value="System" onclick="adjustFields();">
+                                        Variável do sistema
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label>Ordem</label>
+                                <input type="number" name="order" required class="form-control"/>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label>Tempo na tela</label>
+                                <input type="number" name="timeOnScreen" value="10" min="5" required
+                                       class="form-control"/>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label>Mensagem</label>
+                                <input type="text" name="content" min="1" required class="form-control text"/>
+                                <select name="content" required class="form-control select">
+                                    <option value="date">Data</option>
+                                    <option value="time">Hora</option>
+                                    <option value="lm35">Temperatura</option>
+                                </select>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="reset" class="btn btn-danger btn-sm" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"/>
+                    Cancelar
+                </button>
+                <button type="button" onclick="save()" class="btn btn-success btn-sm">
+                    <span class="glyphicon glyphicon-save"/>
+                    Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var panels = [];
+
+    var typeLabels = {'Animated': 'Animada', 'Static': "Estática", 'System': 'Variável do sistema'};
+    var messageLabels = {'date': 'Data', 'time': "Hora", 'lm35': 'Temperatura'};
+
+    var $form = $('#panel-form');
+    var $formModal = $("#form-modal");
+
+    var tableRowTemplate = compileTemplate('#table-row-template');
+
+    function adjustFields() {
+        var $ctnTxt = $form.find("input[name='content']").hide().prop('disabled', true);
+        var $ctnSel = $form.find("select[name='content']").hide().prop('disabled', true);
+        var type = $form.find("input[name='type']:checked").val();
+        switch (type) {
+            case 'Animated': {
+                $form.find("input[name='timeOnScreen']").prop('disabled', true);
+                $ctnTxt.show().prop('disabled', false);
+                break;
+            }
+            case 'Static': {
+                $form.find("input[name='timeOnScreen']").prop('disabled', false);
+                $ctnTxt.show().prop('disabled', false);
+                break;
+            }
+            case 'System': {
+                $form.find("input[name='timeOnScreen']").prop('disabled', false);
+                $ctnSel.show().prop('disabled', false);
+                break;
+            }
+        }
+
+    }
+
+    function resetForm() {
+        $form.find("input[type='text'], select").show().prop('disabled', false).val('');
+        var order = 0;
+        panels.forEach(function (p) {
+            order = Math.max(order, p.order);
+        });
+        order++;
+        $form.fillForm({
+            order: order,
+            id: '',
+            timeOnScreen: 30,
+            type: 'Animated'
+        });
+    }
+
+    function newElement() {
+        resetForm();
+        adjustFields();
+        $formModal.modal();
+    }
+
+    function save() {
+        $form.validator('validate');
+        if ($form.find('.has-error').length === 0) {
+            $.post('/api/manage/messages', JSON.stringify($form.serializeObject()), 'json')
+                .then(function (data) {
+                    refreshTable();
+                    $formModal.modal('hide');
+                });
+        }
+    }
+
+    function list(panels) {
+        return panels.map(function (p) {
+            p.content = escapeHtml(p.content);
+            p.typeLabel = typeLabels[p.type];
+            p.messageLabel = p.type === 'System' ? messageLabels[p.content] : p.content;
+            return tableRowTemplate(p);
+        });
+    }
+
+    function editMsg(id) {
+        resetForm();
+        var panel = panels.find(function (m) {
+            return m.id === id;
+        });
+        $form.fillForm(panel);
+        adjustFields();
+        $formModal.modal();
+    }
+
+    function removeMsg(id) {
+        if (!removeConfirmation()) return;
+        $.delete('/api/manage/messages/' + id).then(function () {
+            refreshTable();
+        });
+    }
+
+    function refreshTable() {
+        $.getJSON('/api/manage/messages').then(function (data) {
+            panels = data;
+            $('#panels-table tbody').html(
+                list(panels)
+            )
+        });
+
+    }
+    refreshTable();
+
+</script>
+
+<script id="table-row-template" type="text/html">
+    <tr>
+        <td>${order}</td>
+        <td>${id}</td>
+        <td>${typeLabel}</td>
+        <td>${type === 'Animated' ? '-' : timeOnScreen}</td>
+        <td>${messageLabel}</td>
+        <td>
+            <button type="button"
+                    class="btn btn-warning btn-xs"
+                    onclick="editMsg(${id})"
+                    title="Editar">
+                <span class="glyphicon glyphicon-edit"/>
+            </button>
+            <button type="button"
+                    class="btn btn-danger btn-xs"
+                    onclick="removeMsg(${id})"
+                    title="Remover">
+                <span class="glyphicon glyphicon-remove"/>
+            </button>
+        </td>
+    </tr>
+</script>

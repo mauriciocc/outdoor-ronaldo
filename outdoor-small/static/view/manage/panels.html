@@ -1,0 +1,418 @@
+<section class="manage-element">
+    <div class="row top-options">
+        <div class="col-xs-6">
+            <button type="button" class="btn btn-link" onclick="loadPage('/view/outdoor.html')">
+                <span class="glyphicon glyphicon-chevron-left"/>
+                Voltar
+            </button>
+        </div>
+
+
+        <div class="col-xs-6 text-right">
+            <button type="button" class="btn btn-success" onclick="newElement()">
+                <span class="glyphicon glyphicon-plus-sign"/>
+                Novo Painel
+            </button>
+        </div>
+
+    </div>
+
+    <section id="manage-panels">
+
+        <fieldset>
+            <legend>Painéis</legend>
+            <table id="panels-table" class="table table-condensed table-hover table-striped">
+                <thead>
+                <th>Ordem</th>
+                <th>Id</th>
+                <th>Tempo na tela</th>
+                <th>Tipo</th>
+                <th>Titulo</th>
+                <th>Mensagem</th>
+                <th>Imagem</th>
+                <th>Ações</th>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </fieldset>
+
+
+    </section>
+
+</section>
+<!-- Modal -->
+<div class="modal fade" id="form-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                <h4 class="modal-title">
+                    <span class="glyphicon glyphicon-info-sign" title="Dinamicos:
+    - pt:Lajeado
+    - pt:Gramado
+    - pt:POA
+    - pt:Guapore
+    - pt:Torres"></span>
+                    Gerenciamento de Painel
+                </h4>
+            </div>
+            <div class="modal-body">
+
+                <form id="panel-form">
+                    <input type="hidden" name="id"/>
+
+                    <input type="hidden" name="imageContent"/>
+                    <input type="hidden" name="imageType"/>
+
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label>Tipo: </label>
+                                    <div class="radio-inline">
+                                        <label>
+                                            <input type="radio" name="type" value="Regular" onclick="adjustFields()">
+                                            Normal
+                                        </label>
+                                    </div>
+                                    <div class="radio-inline">
+                                        <label>
+                                            <input type="radio" name="type" value="Weather" onclick="adjustFields()">
+                                            Previsão do Tempo
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    <section class="regular-form">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Ordem</label>
+                                    <input type="number" name="order" class="form-control" required/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Tempo na tela</label>
+                                    <input type="number" name="timeOnScreen" min="5" required class="form-control"/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Cor de fundo</label>
+                                    <input type="text" name="bgColor" class="form-control colorpicker" required/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Titulo</label>
+                                    <input type="text" name="title" class="form-control"/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Tamanho Fonte</label>
+                                    <input type="number" name="titleStyle.size" min="10" class="form-control" required/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Cor Fonte</label>
+                                    <input type="text" name="titleStyle.color" class="form-control colorpicker"
+                                           required/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Mensagem</label>
+                                    <input type="text" name="message" class="form-control"/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Tamanho Fonte</label>
+                                    <input type="number" name="messageStyle.size" min="10" class="form-control"
+                                           required/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Cor Fonte</label>
+                                    <input type="text" name="messageStyle.color" class="form-control colorpicker"
+                                           required/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <input type="file" onchange="previewFile()" accept="image/*" class="imageUpload">
+                            </div>
+                            <div class="col-xs-2">
+                                <button type="button" onclick="removeImage()" class="btn btn-warning btn-sm">
+                                    <span class="glyphicon glyphicon-remove"/>
+                                    Remover Imagem
+                                </button>
+                            </div>
+                            <div class="col-xs-6">
+                                <img class="image-preview" src="" style="max-width: 100px"/>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="weather-form" style="display: none">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label>Ordem</label>
+                                    <input type="number" name="order" class="form-control" required disabled/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label>Tempo na tela</label>
+                                    <input type="number" name="timeOnScreen" min="5" required class="form-control" disabled/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label>Cidade</label>
+                                    <select name="message" class="form-control" required disabled>
+                                        <option value="pt:Lajeado">Lajeado</option>
+                                        <option value="pt:Gramado">Gramado</option>
+                                        <option value="pt:POA">Porto Alegre</option>
+                                        <option value="pt:Guapore">Guaporé</option>
+                                        <option value="pt:Torres">Torres</option>
+                                    </select>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="reset" class="btn btn-danger btn-sm" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"/>
+                    Cancelar
+                </button>
+                <button type="button" onclick="save()" class="btn btn-success btn-sm">
+                    <span class="glyphicon glyphicon-save"/>
+                    Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    function previewFile() {
+        var $preview = $('.image-preview');
+        var file = $(".imageUpload")[0].files[0];
+
+        if (file.type.indexOf("image") == -1) {
+            alert("Somente imagens são suportadas!");
+            return;
+        }
+        var reader = new FileReader();
+
+        reader.addEventListener("load", function () {
+            $preview.attr('src', reader.result);
+            $("input[name='imageContent']").val(reader.result);
+            $("input[name='imageType']").val(file.type);
+        }, false);
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    var panels = [];
+
+    var $form = $('#panel-form');
+    var $formModal = $("#form-modal");
+    var $imagePreview = $('.image-preview');
+
+    var tableRowTemplate = _.template($('#table-row-template').text());
+
+    function resetForm() {
+        $form.find("input[type!='radio']").val('');
+        var order = 0;
+        panels.forEach(function (p) {
+            order = Math.max(order, p.order);
+        });
+        $imagePreview.attr('src', '');
+        order++;
+        $form.fillForm({
+            type: 'Regular',
+            id: '',
+            order: order,
+            bgColor: '#FFF',
+            timeOnScreen: 30,
+            titleStyle: {
+                size: 18,
+                color: '#333'
+            },
+            messageStyle: {
+                size: 14,
+                color: '#333'
+            }
+        });
+    }
+
+    function adjustFields() {
+        var type = $form.find("input[name='type']:checked").val();
+        switch (type) {
+            case 'Regular': {
+                $('.regular-form').show().find('input,select').prop('disabled', false);
+                $('.weather-form').hide().find("input,select").prop('disabled', true);
+                break;
+            }
+            case 'Weather': {
+                $('.weather-form').show().find('input,select').prop('disabled', false);
+                $('.regular-form').hide().find("input,select").prop('disabled', true);
+                break;
+            }
+        }
+
+    }
+
+    function newElement() {
+        resetForm();
+        adjustFields();
+        $formModal.modal();
+        toggleColorpickers();
+    }
+
+    function save() {
+        $form.validator('validate');
+        if ($form.find('.has-error').length === 0) {
+            $.post('/api/manage/panels', JSON.stringify($form.serializeObject()), 'json')
+                .then(function (data) {
+                    refreshTable();
+                    $formModal.modal('hide');
+                });
+        }
+    }
+
+    var typeLabels = {'Regular': 'Normal', 'Weather': 'Previsão do Tempo'};
+    function list(panels) {
+        var st = function (bg, fs) {
+            return 'background-color: ' + bg + ';font-size: ' + fs.size + 'px; color: ' + fs.color + ';';
+        };
+        return panels.map(function (p) {
+            p.tStyle = st(p.bgColor, p.titleStyle);
+            p.mStyle = st(p.bgColor, p.messageStyle);
+            p.imageLink = panelImageLink(p.id);
+            p.typeLabel = typeLabels[p.type];
+            return tableRowTemplate(p);
+        });
+    }
+
+    function editPanel(id) {
+        resetForm();
+        var panel = panels.find(function (m) {
+            return m.id === id;
+        });
+        $form.fillForm(panel);
+        $imagePreview.attr('src', panel.containImage ? panelImageLink(panel.id) : '');
+        adjustFields();
+        $formModal.modal();
+        toggleColorpickers();
+    }
+
+    function removePanel(id) {
+        if (!removeConfirmation()) return;
+        $.delete('/api/manage/panels/' + id).then(function () {
+            refreshTable();
+        });
+    }
+
+    function refreshTable() {
+        $.getJSON('/api/manage/panels').then(function (data) {
+            panels = data;
+            panels.forEach(function (el) {
+                if(!el.hasOwnProperty('containImage')) {
+                    el.containImage = el.imageContent.length > 0;
+                }
+            });
+            $('#panels-table tbody').html(
+                list(panels)
+            )
+        });
+
+    }
+
+    function removeImage() {
+        $(".imageUpload").val('');
+        $("input[name='imageContent']").val('');
+        $("input[name='imageType']").val('');
+        $imagePreview.attr('src', '');
+    }
+
+    refreshTable();
+
+    var toggleColorpickers = function () {
+        $('.colorpicker').colorpicker('destroy').colorpicker();
+    }
+
+</script>
+
+
+<script id="table-row-template" type="text/html">
+    <tr>
+        <td>${order}</td>
+        <td>${id}</td>
+        <td>${timeOnScreen}</td>
+        <td>${typeLabel}</td>
+        <td style="${tStyle}">${title}</td>
+        <td style="${mStyle}">${message}</td>
+        <td>
+            <% if(containImage) { %>
+            <img src="${imageLink}" style="width: 50px"/>
+            <% } else { %>
+            -
+            <% } %>
+        </td>
+        <td>
+            <button type="button"
+                    class="btn btn-warning btn-xs"
+                    onclick="editPanel(${id})"
+                    title="Editar">
+                <span class="glyphicon glyphicon-edit"/>
+            </button>
+            <button type="button"
+                    class="btn btn-danger btn-xs"
+                    onclick="removePanel(${id})"
+                    title="Remover">
+                <span class="glyphicon glyphicon-remove"/>
+            </button>
+        </td>
+    </tr>
+</script>
