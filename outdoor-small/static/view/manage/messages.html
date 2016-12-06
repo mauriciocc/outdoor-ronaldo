@@ -105,11 +105,20 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row content-text">
                         <div class="col-xs-12">
                             <div class="form-group">
                                 <label>Mensagem</label>
-                                <input type="text" name="content" min="1" required class="form-control text"/>
+                                <input type="text" name="content" minlength="1" required class="form-control text"/>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row content-select">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label>Mensagem</label>
                                 <select name="content" required class="form-control select">
                                     <option value="date">Data</option>
                                     <option value="time">Hora</option>
@@ -119,6 +128,7 @@
                             </div>
                         </div>
                     </div>
+
 
                 </form>
             </div>
@@ -149,23 +159,22 @@
     var tableRowTemplate = compileTemplate('#table-row-template');
 
     function adjustFields() {
-        var $ctnTxt = $form.find("input[name='content']").hide().prop('disabled', true);
-        var $ctnSel = $form.find("select[name='content']").hide().prop('disabled', true);
+        $form.find('.content-text, .content-select').hide().find('input, select').prop('disabled', true);
         var type = $form.find("input[name='type']:checked").val();
         switch (type) {
             case 'Animated': {
                 $form.find("input[name='timeOnScreen']").prop('disabled', true);
-                $ctnTxt.show().prop('disabled', false);
+                $form.find('.content-text').show().find('input, select').prop('disabled', false);
                 break;
             }
             case 'Static': {
                 $form.find("input[name='timeOnScreen']").prop('disabled', false);
-                $ctnTxt.show().prop('disabled', false);
+                $form.find('.content-text').show().find('input, select').prop('disabled', false);
                 break;
             }
             case 'System': {
                 $form.find("input[name='timeOnScreen']").prop('disabled', false);
-                $ctnSel.show().prop('disabled', false);
+                $form.find('.content-select').show().find('input, select').prop('disabled', false);
                 break;
             }
         }
