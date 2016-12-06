@@ -26,6 +26,7 @@
                 <th>Ordem</th>
                 <th>Id</th>
                 <th>Tempo na tela</th>
+                <th>Tipo</th>
                 <th>Titulo</th>
                 <th>Mensagem</th>
                 <th>Imagem</th>
@@ -65,118 +66,152 @@
                     <input type="hidden" name="image.content"/>
                     <input type="hidden" name="image.type"/>
 
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <div class="form-group">
-                                <label>Tipo: </label>
-                                <div class="radio-inline">
-                                    <label>
-                                        <input type="radio" name="type" value="Regular" checked>
-                                        Normal
-                                    </label>
-                                </div>
-                                <div class="radio-inline">
-                                    <label>
-                                        <input type="radio" name="type" value="Image">
-                                        Imagem
-                                    </label>
-                                </div>
-                                <div class="radio-inline">
-                                    <label>
-                                        <input type="radio" name="type" value="Weather">
-                                        Previsão do Tempo
-                                    </label>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label>Tipo: </label>
+                                    <div class="radio-inline">
+                                        <label>
+                                            <input type="radio" name="type" value="Regular" onclick="adjustFields()">
+                                            Normal
+                                        </label>
+                                    </div>
+                                    <div class="radio-inline">
+                                        <label>
+                                            <input type="radio" name="type" value="Weather" onclick="adjustFields()">
+                                            Previsão do Tempo
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-xs-4">
-                            <div class="form-group">
-                                <label>Ordem</label>
-                                <input type="number" name="order" class="form-control" required/>
-                                <div class="help-block with-errors"></div>
+                    <section class="regular-form">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Ordem</label>
+                                    <input type="number" name="order" class="form-control" required/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Tempo na tela</label>
+                                    <input type="number" name="timeOnScreen" min="5" required class="form-control"/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Cor de fundo</label>
+                                    <input type="text" name="bgColor" class="form-control colorpicker" required/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-xs-4">
-                            <div class="form-group">
-                                <label>Tempo na tela</label>
-                                <input type="number" name="timeOnScreen" min="5" required class="form-control"/>
-                                <div class="help-block with-errors"></div>
-                            </div>
-                        </div>
-                        <div class="col-xs-4">
-                            <div class="form-group">
-                                <label>Cor de fundo</label>
-                                <input type="text" name="bgColor" class="form-control colorpicker" required/>
-                                <div class="help-block with-errors"></div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-xs-4">
-                            <div class="form-group">
-                                <label>Titulo</label>
-                                <input type="text" name="title" class="form-control"/>
-                                <div class="help-block with-errors"></div>
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Titulo</label>
+                                    <input type="text" name="title" class="form-control"/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Tamanho Fonte</label>
+                                    <input type="number" name="titleStyle.size" min="10" class="form-control" required/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Cor Fonte</label>
+                                    <input type="text" name="titleStyle.color" class="form-control colorpicker"
+                                           required/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-xs-4">
-                            <div class="form-group">
-                                <label>Tamanho Fonte</label>
-                                <input type="number" name="titleStyle.size" min="10" class="form-control" required/>
-                                <div class="help-block with-errors"></div>
-                            </div>
-                        </div>
-                        <div class="col-xs-4">
-                            <div class="form-group">
-                                <label>Cor Fonte</label>
-                                <input type="text" name="titleStyle.color" class="form-control colorpicker" required/>
-                                <div class="help-block with-errors"></div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-xs-4">
-                            <div class="form-group">
-                                <label>Mensagem</label>
-                                <input type="text" name="message" class="form-control"/>
-                                <div class="help-block with-errors"></div>
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Mensagem</label>
+                                    <input type="text" name="message" class="form-control"/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Tamanho Fonte</label>
+                                    <input type="number" name="messageStyle.size" min="10" class="form-control"
+                                           required/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>Cor Fonte</label>
+                                    <input type="text" name="messageStyle.color" class="form-control colorpicker"
+                                           required/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-xs-4">
-                            <div class="form-group">
-                                <label>Tamanho Fonte</label>
-                                <input type="number" name="messageStyle.size"  min="10" class="form-control" required/>
-                                <div class="help-block with-errors"></div>
-                            </div>
-                        </div>
-                        <div class="col-xs-4">
-                            <div class="form-group">
-                                <label>Cor Fonte</label>
-                                <input type="text" name="messageStyle.color" class="form-control colorpicker" required/>
-                                <div class="help-block with-errors"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-4">
-                            <input type="file" onchange="previewFile()" accept="image/*" class="imageUpload">
-                        </div>
-                        <div class="col-xs-2">
-                            <button type="button" onclick="removeImage()" class="btn btn-warning btn-sm">
-                                <span class="glyphicon glyphicon-remove"/>
-                                Remover Imagem
-                            </button>
-                        </div>
-                        <div class="col-xs-6">
-                            <img class="image-preview" src="" style="max-width: 100px"/>
-                        </div>
-                    </div>
 
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <input type="file" onchange="previewFile()" accept="image/*" class="imageUpload">
+                            </div>
+                            <div class="col-xs-2">
+                                <button type="button" onclick="removeImage()" class="btn btn-warning btn-sm">
+                                    <span class="glyphicon glyphicon-remove"/>
+                                    Remover Imagem
+                                </button>
+                            </div>
+                            <div class="col-xs-6">
+                                <img class="image-preview" src="" style="max-width: 100px"/>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="weather-form" style="display: none">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label>Ordem</label>
+                                    <input type="number" name="order" class="form-control" required disabled/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label>Tempo na tela</label>
+                                    <input type="number" name="timeOnScreen" min="5" required class="form-control" disabled/>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label>Cidade</label>
+                                    <select name="message" class="form-control" required disabled>
+                                        <option value="pt:Lajeado">Lajeado</option>
+                                        <option value="pt:Gramado">Gramado</option>
+                                        <option value="pt:POA">Porto Alegre</option>
+                                        <option value="pt:Guapore">Guaporé</option>
+                                        <option value="pt:Torres">Torres</option>
+                                    </select>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </form>
             </div>
             <div class="modal-footer">
@@ -227,7 +262,7 @@
     var tableRowTemplate = _.template($('#table-row-template').text());
 
     function resetForm() {
-        $form.find("input").val('');
+        $form.find("input[type!='radio']").val('');
         var order = 0;
         panels.forEach(function (p) {
             order = Math.max(order, p.order);
@@ -235,6 +270,7 @@
         $imagePreview.attr('src', '');
         order++;
         $form.fillForm({
+            type: 'Regular',
             id: '',
             order: order,
             bgColor: '#FFF',
@@ -250,8 +286,26 @@
         });
     }
 
+    function adjustFields() {
+        var type = $form.find("input[name='type']:checked").val();
+        switch (type) {
+            case 'Regular': {
+                $('.regular-form').show().find('input,select').prop('disabled', false);
+                $('.weather-form').hide().find("input,select").prop('disabled', true);
+                break;
+            }
+            case 'Weather': {
+                $('.weather-form').show().find('input,select').prop('disabled', false);
+                $('.regular-form').hide().find("input,select").prop('disabled', true);
+                break;
+            }
+        }
+
+    }
+
     function newElement() {
         resetForm();
+        adjustFields();
         $formModal.modal();
         toggleColorpickers();
     }
@@ -267,14 +321,16 @@
         }
     }
 
+    var typeLabels = {'Regular': 'Normal', 'Weather': 'Previsão do Tempo'};
     function list(panels) {
         var st = function (bg, fs) {
-            return 'background-color: '+bg+';font-size: ' + fs.size + 'px; color: ' + fs.color + ';';
+            return 'background-color: ' + bg + ';font-size: ' + fs.size + 'px; color: ' + fs.color + ';';
         };
         return panels.map(function (p) {
             p.tStyle = st(p.bgColor, p.titleStyle);
             p.mStyle = st(p.bgColor, p.messageStyle);
             p.imageLink = panelImageLink(p.id);
+            p.typeLabel = typeLabels[p.type];
             return tableRowTemplate(p);
         });
     }
@@ -286,11 +342,13 @@
         });
         $form.fillForm(panel);
         $imagePreview.attr('src', panel.containImage ? panelImageLink(panel.id) : '');
+        adjustFields();
         $formModal.modal();
         toggleColorpickers();
     }
 
     function removePanel(id) {
+        if (!removeConfirmation()) return;
         $.delete('/api/manage/panels/' + id).then(function () {
             refreshTable();
         });
@@ -315,7 +373,7 @@
 
     refreshTable();
 
-    var toggleColorpickers = function() {
+    var toggleColorpickers = function () {
         $('.colorpicker').colorpicker('destroy').colorpicker();
     }
 
@@ -327,13 +385,14 @@
         <td>${order}</td>
         <td>${id}</td>
         <td>${timeOnScreen}</td>
+        <td>${typeLabel}</td>
         <td style="${tStyle}">${title}</td>
         <td style="${mStyle}">${message}</td>
         <td>
             <% if(containImage) { %>
-                <img src="${imageLink}" style="width: 50px"/>
+            <img src="${imageLink}" style="width: 50px"/>
             <% } else { %>
-                -
+            -
             <% } %>
         </td>
         <td>

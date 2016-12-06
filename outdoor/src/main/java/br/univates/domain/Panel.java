@@ -3,6 +3,7 @@ package br.univates.domain;
 
 public class Panel extends RoutedElement {
 
+    private PanelType type = PanelType.Regular;
     private String title = "SEM TITULO";
     private FontStyle titleStyle = new FontStyle(18, "#333");
     private Image image = new Image();
@@ -11,6 +12,14 @@ public class Panel extends RoutedElement {
     private String bgColor = "#FFF";
 
     public Panel() {
+    }
+
+    public PanelType getType() {
+        return type;
+    }
+
+    public void setType(PanelType type) {
+        this.type = type;
     }
 
     public String getTitle() {

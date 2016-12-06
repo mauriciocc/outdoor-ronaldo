@@ -190,36 +190,36 @@ var panelImageLink = function (id) {
 var weatherMapDescriptionToIconSet = function(description) {
     //http://forecastfont.iconvau.lt/
     var icons = [];
-    switch (description) {
-        case 'Tempo firme': {
+    switch (description.toLowerCase()) {
+        case 'tempo firme': {
             icons.push("icon-sun");
             break;
         }
-        case 'Poucas nuvens': {
+        case 'poucas nuvens': {
             icons.push("icon-cloud", "icon-sunny");
             break;
         }
-        case 'Muitas nuvens': {
+        case 'muitas nuvens': {
             icons.push("icon-cloud");
             break;
         }
-        case 'Alguma nebulosidade': {
+        case 'alguma nebulosidade': {
             icons.push("icon-mist");
             break;
         }
-        case 'Névoa úmida':{
+        case 'névoa úmida':{
             icons.push("icon-mist");
             break;
         }
-        case 'Chuva': {
+        case 'chuva': {
             icons.push("basecloud", "icon-rainy");
             break;
         }
-        case 'Pancada de chuva': {
+        case 'pancada de chuva': {
             icons.push("basecloud", "icon-drizzle icon-sunny");
             break;
         }
-        case 'Céu encoberto': {
+        case 'céu encoberto': {
             icons.push("basecloud", "icon-hail");
             break;
         }
