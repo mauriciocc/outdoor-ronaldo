@@ -112,12 +112,14 @@
 </script>
 
 <script id="panel-weather" type="text/html">
-    <h1>${cityLabel}</h1>
-    <h3>${weekDay}</h3>
-    <h2>${temperature} - ${description}</h2>
+    <section class="weather-container">
+    <h1 class="city">${cityLabel}</h1>
+    <h3 class="day">${weekDay}</h3>
+    <h2 class="temp">${temperature} - ${description}</h2>
     <ul class="weather">
         <% icons.forEach(function(icon) { %>
         <li class="${icon}"></li>
         <% }) %>
     </ul>
+    </section>
 </script>

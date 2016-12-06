@@ -24,6 +24,7 @@ class App implements HttpHandler {
     public static final String API_MANAGE = "api/manage/";
     public static final String GET = "GET";
     public static final String POST = "POST";
+    public static final String DELETE = "DELETE";
     private final Path htdocs;
 
     private final PanelStore panelStore;
@@ -109,6 +110,17 @@ class App implements HttpHandler {
                     });
 
                 }
+            }
+            if (method.equalsIgnoreCase(DELETE)) {
+                String[] splitedUri = uri.split("/");
+                int id = Integer.parseInt(splitedUri[1]);
+                if("messages".equals(splitedUri[0])) {
+                    messageStore.remove(id);
+                }
+                if("panels".equals(splitedUri[0])) {
+                    panelStore.remove(id);
+                }
+                t.sendResponseHeaders(200, 0);
             }
             if (method.equalsIgnoreCase(POST)) {
                 switch (uri) {

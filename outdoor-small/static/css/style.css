@@ -65,6 +65,13 @@ hr {
     max-width: 250px;
 }
 
+.weather-container {
+    margin-top: 20%;
+}
+.weather-container .weather {
+    width: 165px;
+}
+
 /* Icons */
 
 .weather {

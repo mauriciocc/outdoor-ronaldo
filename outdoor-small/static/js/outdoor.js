@@ -9,7 +9,7 @@ var Message = function (time, dynamic, fn) {
 };
 
 Message.isStatic = function(message) {
-    return message.content.indexOf('static:') !== -1;
+    return message.type === 'Static';
 };
 
 Message.isDate = function(message) {
@@ -65,8 +65,9 @@ Message.createFromData = function ($msgs, msg, rotatorFn) {
     var content = msg.content;
     var isStatic = Message.isStatic(msg);
     return Message(isStatic ? msg.timeOnScreen : -1, false, function () {
-        if (isStatic !== -1) {
-            content = content.replace('static:', '');
+        if(isStatic) {
+            $msgs.html(escapeHtml(content));
+            return;
         }
         $msgs.html('<div class="marquee">' + escapeHtml(content) + '</div>');
         if (!isStatic) {

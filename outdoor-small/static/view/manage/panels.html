@@ -306,7 +306,9 @@
     function newElement() {
         resetForm();
         adjustFields();
-        $formModal.modal();
+        $formModal.modal().on('hide.bs.modal', function() {
+            $('.colorpicker').colorpicker('destroy');
+        });
         toggleColorpickers();
     }
 
@@ -343,7 +345,9 @@
         $form.fillForm(panel);
         $imagePreview.attr('src', panel.containImage ? panelImageLink(panel.id) : '');
         adjustFields();
-        $formModal.modal();
+        $formModal.modal().on('hide.bs.modal', function() {
+            $('.colorpicker').colorpicker('destroy');
+        });
         toggleColorpickers();
     }
 
