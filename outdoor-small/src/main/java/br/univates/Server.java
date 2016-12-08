@@ -14,10 +14,15 @@ public class Server {
 
     public static void main(String[] args) throws Exception {
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 1024);
+
         Path htdocs = Paths.get("static");
         LOG.info("Serving files from: " + htdocs.toAbsolutePath());
+
         server.createContext("/", new App(htdocs));
-        server.setExecutor(Executors.newFixedThreadPool(8));
+
+        int totalThreads = Runtime.getRuntime().availableProcessors() * 2 + 1;
+        server.setExecutor(Executors.newFixedThreadPool(totalThreads));
+
         server.start();
     }
 

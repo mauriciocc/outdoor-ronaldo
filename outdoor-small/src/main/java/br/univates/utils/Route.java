@@ -2,31 +2,45 @@ package br.univates.utils;
 
 import com.sun.net.httpserver.HttpExchange;
 
-import java.io.OutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class Route {
+
+    public static final String QUERY = "\\?";
+    public static final String PATH = "/";
+    public static final String KEY_VAL = "=";
+    public static final String CATCH_ALL = "*";
+    public static final String REQUEST_URI = "REQUEST_URI";
 
     private final String method;
     private final String template;
     private final Handler handler;
 
-    public Route(String method, String template, Handler handler) {
-        this.method = method;
+    public Route(Method method, String template, Handler handler) {
+        this.method = method.toString();
         this.template = template;
         this.handler = handler;
     }
 
-    public void handle(HttpExchange t, String uri, OutputStream os) {
-        handler.handle(t, uri, os);
+    public Response handle(HttpExchange t, String uri) {
+        try (InputStreamReader body = new InputStreamReader(t.getRequestBody(), UTF_8)) {
+            return handler.handle(body, pathParams(uri), queryParams(uri));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Map<String, String> pathParams(final String uri) {
         Map<String, String> params = new LinkedHashMap<>();
-        String[] uriParts = uri.split("/");
-        String[] parts = template.split("/");
+        String[] uriParts = uri.split(PATH);
+        String[] parts = template.split(PATH);
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (part.startsWith("{")) {
@@ -34,13 +48,14 @@ public class Route {
                 params.put(key, uriParts[i]);
             }
         }
+        params.put(REQUEST_URI, uri);
         return params;
     }
 
     public Map<String, String> queryParams(final String uri) {
-        String[] split = uri.split("\\?");
+        String[] split = uri.split(QUERY);
         if (split.length > 1) {
-            String[] params = split[1].split("=");
+            String[] params = split[1].split(KEY_VAL);
             Map<String, String> paramMap = new LinkedHashMap<>();
             for (int i = 0; i < params.length; i += 2) {
                 paramMap.put(params[i], params[i + 1]);
@@ -52,12 +67,16 @@ public class Route {
     }
 
     public boolean matches(final String method, final String uri) {
+        if (template.equals(CATCH_ALL)) {
+            return true;
+        }
+
         if (!this.method.equalsIgnoreCase(method)) {
             return false;
         }
 
-        String[] parts = template.split("/");
-        String[] uriParts = uri.split("/");
+        String[] parts = template.split(PATH);
+        String[] uriParts = uri.split(QUERY)[0].split(PATH);
 
         if (uriParts.length != parts.length) {
             return false;
@@ -77,6 +96,13 @@ public class Route {
     }
 
     public static interface Handler {
-        void handle(HttpExchange t, String uri, OutputStream os);
+        Response handle(Reader body, Map<String, String> path, Map<String, String> query);
     }
+
+    public static enum Method {
+        GET,
+        POST,
+        DELETE
+    }
+
 }
