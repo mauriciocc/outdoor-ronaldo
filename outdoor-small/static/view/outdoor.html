@@ -19,27 +19,29 @@
         $this.find('.edit-label').remove();
     }
 
-    var rotators = [];
+    var rotators = {};
     var $msgs = $('#messages');
 
-    (function() {
+	function updateMessages() {
+	    var $msgs = $('#messages');
         $.getJSON('/api/manage/messages').then(function (data) {
             var rotator;
 
             var messages = data.map(function (msg) {
                 return Message.createFromData($msgs, msg, function () { return rotator; });
             });
-
-            rotator = new MessageRotator(messages);
-            rotators.push(rotator);
+			rotator = new MessageRotator(messages, function () {updateMessages();})
+            rotators.messages = rotator;
         });
-    })();
+    }
+	updateMessages();
 
     //------------------------------------------------
 
     var $panels = $('#panels');
 
-    (function () {
+    function updatePanels() {
+        var $panels = $('#panels');
         var panelTemplate = _.template($('#panel-template').text());
         var weatherTemplate = _.template($('#panel-weather').text());
         $.getJSON('/api/manage/panels').then(function (data) {
@@ -84,26 +86,22 @@
                     );
                 })
             });
-            rotators.push(new MessageRotator(panels));
+            rotators.panels = new MessageRotator(panels, function() {updatePanels();});
         });
-    })();
+    }
+    
+    updatePanels();
 
     var intervalId = setInterval(function () {
-        rotators.forEach(function (r) {
-            r.tick();
-        });
+    	for(var key in rotators) {
+    		rotators[key].tick();
+    	}
         console.log('tick');
     }, 1000);
 
     $(window).on('resize', function () {
         ajustHeight($panels, $msgs);
-    }).trigger('resize').on('keydown', function (e) {
-        if (e.which === 32) {
-            rotators.forEach(function (r) {
-                r.togglePause();
-            })
-        }
-    });
+    }).trigger('resize');
 </script>
 
 
