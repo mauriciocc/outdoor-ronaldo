@@ -122,11 +122,12 @@ var checkTime = function (i) {
     return i;
 };
 
-var MessageRotator = function (items) {
+var MessageRotator = function (items, finishFn) {
     this.items = items;
     this.idx = -1;
     this.rendered = false;
     this.paused = false;
+    this.finishFn = finishFn;
     this.nextMessage();
 };
 
@@ -168,6 +169,8 @@ MessageRotator.prototype = {
         this.idx++;
         if (this.idx >= this.items.length) {
             this.idx = 0;
+            console.log('Update');
+			this.finishFn();
         }
         this.time = this.items[this.idx].time;
         this.rendered = false;
